@@ -39,7 +39,8 @@ const User = sequelize.define('User', {
         allowNull: false,
         unique: true,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            isEmail: {msg: 'Email invalido'}
         }
     },
     password: {
@@ -47,7 +48,11 @@ const User = sequelize.define('User', {
         allowNull: false,
         unique: true,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            len: {
+                args: [8,22],
+                msg: 'La contraseña debe tener entre 8 y 22 caracteres'
+            }
         }
     },
     image: {
