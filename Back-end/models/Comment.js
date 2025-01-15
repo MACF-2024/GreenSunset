@@ -18,7 +18,9 @@ const Comment = sequelize.define('Comment', {
         references: {
             model: 'User',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     productId: {
         type: DataTypes.UUID,
@@ -26,11 +28,22 @@ const Comment = sequelize.define('Comment', {
         references: {
             model: 'Product',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     }
 });
 
 // relaciones
-// usuario, producto
+// usuario (1-N), producto (N-N)
+
+// relacion comentario - producto (N-1)
+// Comment.hasMany(Product, { foreignKey: 'productId', as: 'product' });
+// Product.belongsTo(Comment, { foreignKey: 'commentId', as: 'comment' });
+
+// relacion comentario - usuario (N-1)
+// Comment.hasMany(User, { foreignKey: 'commentId', as: 'comment' });
+// User.belongsTo(Comment, { foreignKey: 'userId', as: 'user' });
+
 
 module.exports = Comment;

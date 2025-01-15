@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4, validate } = require('uuid');
 const sequelize = require('../db-sequelize');
 
-const DetaillOrder = sequelize.define('DetaillOrder', {
+const OrderDetail = sequelize.define('OrderDetail', {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
@@ -14,7 +14,9 @@ const DetaillOrder = sequelize.define('DetaillOrder', {
         references: {
             model: 'Order',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     productId: {
         type: DataTypes.UUID,
@@ -22,7 +24,9 @@ const DetaillOrder = sequelize.define('DetaillOrder', {
         references: {
             model: 'Product',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     quantity: {
         type: DataTypes.INTEGER,
@@ -45,6 +49,6 @@ const DetaillOrder = sequelize.define('DetaillOrder', {
 });
 
 // relaciones
-// ordenes, productos
+// ordenes (1-1), productos (N-1)
 
-module.exports = DetaillOrder;
+module.exports = OrderDetail;

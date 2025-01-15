@@ -23,7 +23,19 @@ const Order = sequelize.define('Order', {
         references: {
             model: 'Users',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    },
+    orderDetailId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: 'OrderDetail',
+            key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     createAt: {
         type: DataTypes.DATE,
@@ -34,5 +46,16 @@ const Order = sequelize.define('Order', {
         defaultValue: DataTypes.NOW
     }
 });
+
+// realciones
+// usuario (1-1), detalle de orden (1-1)
+
+// relacion orden de compra - usuario (1-1)
+// Order.hasOne(User, { foreignKey: 'userId', as: 'user' });
+// User.belongsTo(Order, { foreignKey: 'orderId', as: 'order' });
+
+// relacion orden - detalle de orden (1-1)
+// Order.hasOne(OrderDetail, { foreignKey: 'orderId', as: 'order'});
+// OrderDetail.belongsTo(Order, { foreignKey: 'OrderDetailId', as: 'detail'});
 
 module.exports = Order;

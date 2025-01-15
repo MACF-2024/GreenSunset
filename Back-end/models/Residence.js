@@ -36,11 +36,18 @@ const Residence = sequelize.define('Residence', {
         references: {
             model: 'User',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     }
 });
 
 // relaciones
-// usuario
+// usuario (1-1)
+
+// relacion domicilio - usuario (1-1)
+// Residence.hasOne(User, { foreignKey: 'userId', as: 'user' });
+// User.belongsTo(Residence, { foreignKey: 'residenceId', as: 'residence' });
+
 
 module.exports = Residence;

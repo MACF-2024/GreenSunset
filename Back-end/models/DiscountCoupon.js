@@ -18,11 +18,31 @@ const DiscountCoupon = sequelize.define('DiscountCoupon', {
         references: {
             model: 'Product',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    },
+    cartId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: 'Cart',
+            key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     }
 });
 
 // relaciones
-// productos
+// productos (1-N), carrito (1-N)
+
+// relacion cupon de descuento - carrito (1-N) ---> CREADO (cartRelation.js)
+// DiscountCoupon.hasOne(Cart, { foreignKey: 'discountCouponId', as: 'coupon' });
+// Cart.belongsTo(DiscountCoupon, { foreignKey: 'cartId', as: 'discountCart' });
+
+// relacion cupon de descuanto - producto (1-N)
+// DiscountCoupon.hasMany(Product, { foreignKey: 'productId', as: 'product' });
+// Product.belongsTo(DiscountCoupon, { foreignKey: 'discountCouponId', as: 'coupon' });
 
 module.exports = DiscountCoupon;

@@ -43,7 +43,9 @@ const Product = sequelize.define('Product', {
         references: {
             model: 'Comment',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     rankingId: {
         type: DataTypes.UUID,
@@ -51,7 +53,9 @@ const Product = sequelize.define('Product', {
         references: {
             model: 'Ranking',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     tasteId: {
         type: DataTypes.UUID,
@@ -59,7 +63,9 @@ const Product = sequelize.define('Product', {
         references: {
             model: 'Taste',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     varietyId: {
         type: DataTypes.UUID,
@@ -67,7 +73,9 @@ const Product = sequelize.define('Product', {
         references: {
             model: 'Variety',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     effectId: {
         type: DataTypes.UUID,
@@ -75,7 +83,9 @@ const Product = sequelize.define('Product', {
         references: {
             model: 'Effect',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     cropId: {
         type: DataTypes.UUID,
@@ -83,7 +93,9 @@ const Product = sequelize.define('Product', {
         references: {
             model: 'Crop',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     discount: {
         type: DataTypes.INTEGER,
@@ -99,11 +111,38 @@ const Product = sequelize.define('Product', {
         references: {
             model: 'DiscountCoupon',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
+    orderDetailId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: 'OrderDetail',
+            key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    },
+    favoriteId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: 'Favorite',
+            key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    }
 });
 
 // relacion
-// cupon de descuento, cultivo, efecto, variedad, comentario, ranking, sabor
+// cupon de descuento (1-N), cultivo (N-N), efecto (N-N), variedad (N-N), comentario (N-1), ranking (N-1), sabor (N-N), detalle de orden
+
+// relacion producto - detalle de orden (N-1)
+// Product.hasMany(OrderDetail, { foreignKey: 'productId', as: 'product' });
+// OrderDetail.belongsTo(Product, { foreignKey: 'orderdetailId', as: 'order' });
+
 
 module.exports = Product;

@@ -26,6 +26,10 @@ const Crop = sequelize.define('Crop', {
 });
 
 // relaciones
-// producto
+// producto (N-1)
+
+// relacion cultivo - producto (1-N)
+// Crop.hasMany(Product, { foreignKey: 'productId', as: 'product' });
+// Product.belongsTo(Crop, { foreignKey: 'cropId', as: 'crop' });
 
 module.exports = Crop;
