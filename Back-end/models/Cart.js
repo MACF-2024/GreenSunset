@@ -18,7 +18,9 @@ const Cart = sequelize.define('Cart', {
         references: {
             model: 'User',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     itemId: {
         type: DataTypes.UUID,
@@ -26,7 +28,9 @@ const Cart = sequelize.define('Cart', {
         references: {
             model: 'ItemCart',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     discountCouponId: {
         type: DataTypes.UUID,
@@ -34,7 +38,9 @@ const Cart = sequelize.define('Cart', {
         references: {
             model: 'DiscountCoupon',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     status: {
         type: DataTypes.ENUM('active', 'abandoned', 'completed'),
@@ -43,6 +49,6 @@ const Cart = sequelize.define('Cart', {
 });
 
 // relaciones
-// usuario, item del carrito, cupon de descuento
+// usuario (1-1), item del carrito (1-N), cupon de descuento (N-1)
 
 module.exports = Cart;

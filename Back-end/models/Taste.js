@@ -21,11 +21,18 @@ const Taste = sequelize.define('Taste', {
         references: {
             model: 'Product',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     }
 });
 
 // relaciones
-// productos
+// productos (N-N)
+
+// relacion sabor - producto (N-N)
+// Taste.belongsToMany(Product, { through: 'ProductTaste', foreignKey: 'productId', as: 'product', otherKey: 'tasteId' });
+// Product.belongsToMany(Variety, { through: 'ProductTaste', foreignKey: 'tasteId', as: 'taste', otherKey: 'productId' });
+
 
 module.exports = Taste;

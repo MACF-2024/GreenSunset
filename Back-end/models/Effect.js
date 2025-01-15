@@ -21,11 +21,18 @@ const Effect = sequelize.define('Effect', {
         references: {
             model: 'Product',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     }
 });
 
 // relaciones
-// producto
+// producto (N-N)
+
+// relacion efecto - producto (N-N)
+// Effect.belongsToMany(Product, { through: 'ProductEffect', foreignKey: 'productId', as: 'product', otherKey: 'effectId' });
+// Product.belongsToMany(Effect, { through: 'ProductEffect', foreignKey: 'effectId', as: 'effect', otherKey: 'productId' });
+
 
 module.exports = Effect;

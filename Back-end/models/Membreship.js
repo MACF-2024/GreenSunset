@@ -41,7 +41,9 @@ const Membreship = sequelize.define('Membreship', {
         references: {
             model: 'User',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     discountCouponId: {
         type: DataTypes.UUID,
@@ -49,12 +51,17 @@ const Membreship = sequelize.define('Membreship', {
         references: {
             model: 'DiscountCoupon',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     }
 });
 
 // realaciones
-// cupones de descuento, usuario
+// cupones de descuento (1-1), usuario (1-1)
 
+// relacion membresia - usuario (1-1)
+// Membreship.hasOne(User, { foreignKey: 'userId', as: 'user' });
+// User.belongsTo(Membreship, { foreignKey: 'membreshipId', as: 'membreship' });
 
 module.exports = Membreship;

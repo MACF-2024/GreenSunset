@@ -18,7 +18,9 @@ const ItemCart = sequelize.define('ItemCart', {
         references: {
             model: 'Cart',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
     productId: {
         type: DataTypes.UUID,
@@ -26,11 +28,22 @@ const ItemCart = sequelize.define('ItemCart', {
         references: {
             model: 'Product',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     }
 });
 
 // relaciones
-// carrito, producto
+// carrito (1-N), producto (N-1)
+
+// relacion item del carrito - carrito (N-1)
+// ItemCart.hasMany(Cart, { foreignKey: 'itemId', as: 'cart' });
+// Cart.belongsTo(ItemCart, { foreignKey: 'cartId', as: 'itemCart' });
+
+// relacion producto - item de carrito (N-1)
+// Product.hasMany(ItemCart, { foreignKey: 'productId', as: 'items' });
+// ItemCart.belongsTo(Product, { foreignKey: 'itemCartId', as: 'itemCart' });
+
 
 module.exports = ItemCart;
