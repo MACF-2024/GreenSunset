@@ -9,7 +9,11 @@ const Ranking = sequelize.define('Ranking', {
         primaryKey: true
     },
     ranking: {
-        type: DataTypes.ENUM('uno', 'dos', 'tres', 'cuatro', 'cinco')
+        type: DataTypes.ENUM('uno', 'dos', 'tres', 'cuatro', 'cinco'),
+        validate: {
+            isIn: [['uno', 'dos', 'tres', 'cuatro', 'cinco']],
+            notEmpty: true
+        }
     },
     productId: {
         type: DataTypes.UUID,

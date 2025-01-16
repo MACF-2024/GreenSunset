@@ -10,7 +10,6 @@ const Favorite = sequelize.define('Favorite', {
     },
     productId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'Product',
             key: 'id'
@@ -37,10 +36,8 @@ const Favorite = sequelize.define('Favorite', {
 // Favorites.hasMany(User, { foreignKey: 'favoriteId', as: 'favorite' });
 // User.belongsTo(Favorites, { foreignKey: 'userId', as: 'user' });
 
-// relacion sabor - producto (N-N)
+// relacion favoritos - producto (N-N)
 // Favorite.belongsToMany(Product, { through: 'ProductFavorite', foreignKey: 'productId', as: 'product', otherKey: 'favoriteId' });
 // Product.belongsToMany(Favorite, { through: 'ProductFavorite', foreignKey: 'favoriteId', as: 'favorite', otherKey: 'productId' });
-
-
 
 module.exports = Favorite;

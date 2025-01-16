@@ -12,7 +12,8 @@ const Taste = sequelize.define('Taste', {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            isAlpha: true
         }
     },
     productId: {

@@ -6,7 +6,7 @@ const Comment = require('../models/Comment');
 const Ranking = require('../models/Ranking');
 const Taste = require('../models/Taste');
 const Product = require('../models/Product');
-const Favorite = require('../models/Favorites');
+const Favorite = require('../models/Favorite');
 
 
 // relacion cupon de descuanto - producto (1-N)

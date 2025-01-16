@@ -10,11 +10,10 @@ const DiscountCoupon = sequelize.define('DiscountCoupon', {
     },
     discount: {
         type: DataTypes.INTEGER,
-        defaultValue: 0,
+        defaultValue: 0
     },
     productId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'Product',
             key: 'id'
@@ -24,9 +23,17 @@ const DiscountCoupon = sequelize.define('DiscountCoupon', {
     },
     cartId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'Cart',
+            key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    },
+    mebreshipId: {
+        type:DataTypes.UUID,
+        references: {
+            model: 'Membreship',
             key: 'id'
         },
         onDelete: 'CASCADE',
@@ -35,14 +42,18 @@ const DiscountCoupon = sequelize.define('DiscountCoupon', {
 });
 
 // relaciones
-// productos (1-N), carrito (1-N)
+// productos (1-N), carrito (1-N), membresia (1-N)
 
 // relacion cupon de descuento - carrito (1-N) ---> CREADO (cartRelation.js)
 // DiscountCoupon.hasOne(Cart, { foreignKey: 'discountCouponId', as: 'coupon' });
 // Cart.belongsTo(DiscountCoupon, { foreignKey: 'cartId', as: 'discountCart' });
 
 // relacion cupon de descuanto - producto (1-N)
-// DiscountCoupon.hasMany(Product, { foreignKey: 'productId', as: 'product' });
+// DiscountCoupon.hasOne(Product, { foreignKey: 'productId', as: 'product' });
 // Product.belongsTo(DiscountCoupon, { foreignKey: 'discountCouponId', as: 'coupon' });
+
+// relacion membresia - cupon de descuento (1-1)
+// Membreship.hasOne(DiscountCoupon, { foreignKey: 'membreshipId', as: 'membreship' });
+// DiscountCoupon.belongTo(Membreship, { foreignKey: 'discountCouponId', as: 'coupon' });
 
 module.exports = DiscountCoupon;
