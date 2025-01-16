@@ -30,20 +30,25 @@ const OrderDetail = sequelize.define('OrderDetail', {
     },
     quantity: {
         type: DataTypes.INTEGER,
-        defaultValue: 0
+        defaultValue: 0,
+        validate: {
+            isNumeric: true
+        }
     },
     price: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            isNumeric: true
         }
     },
     subtotal: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            isNumeric: true
         }
     }
 });

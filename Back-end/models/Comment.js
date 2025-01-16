@@ -10,7 +10,10 @@ const Comment = sequelize.define('Comment', {
     },
     comment: {
         type: DataTypes.TEXT('long'),
-        defaultValue: 'Comentario... '
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     },
     userId: {
         type: DataTypes.UUID,
@@ -35,7 +38,7 @@ const Comment = sequelize.define('Comment', {
 });
 
 // relaciones
-// usuario (1-N), producto (N-N)
+// usuario (1-N), producto (1-N)
 
 // relacion comentario - producto (N-1)
 // Comment.hasMany(Product, { foreignKey: 'productId', as: 'product' });

@@ -10,25 +10,50 @@ const Residence = sequelize.define('Residence', {
     },
     street: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isAlphanumeric: true,
+            notEmpty: true
+        }
     },
     zipCode: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isNumeric: true,
+            notEmpty: true
+        }
     },
     type: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM('house', 'departament'),
+        allowNull: false,
+        validate: {
+            isIn: [['house', 'departament']]
+        }
     },
     number: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+            isNumeric: true,
+            notEmpty: true
+        }
     },
     location: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isAlpha: true,
+            notEmpty: true
+        }
     },
     province: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isAlpha: true,
+            notEmpty: true
+        }
     },
     userId: {
         type: DataTypes.UUID,

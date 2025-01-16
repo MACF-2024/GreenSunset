@@ -12,7 +12,8 @@ const Product = sequelize.define('Product', {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            isAlpha: true
         }
     },
     image: {
@@ -20,7 +21,11 @@ const Product = sequelize.define('Product', {
     },
     price: {
         type: DataTypes.DECIMAL(10, 2),
-        defaultValue: 0.00
+        allowNull: false,
+        validate: {
+            isNumeric: true,
+            notEmpty: true
+        }
     },
     description: {
         type: DataTypes.TEXT('long'),
@@ -39,7 +44,6 @@ const Product = sequelize.define('Product', {
     },
     commentId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'Comment',
             key: 'id'
@@ -49,7 +53,6 @@ const Product = sequelize.define('Product', {
     },
     rankingId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'Ranking',
             key: 'id'
@@ -107,7 +110,6 @@ const Product = sequelize.define('Product', {
     },
     discountCouponId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'DiscountCoupon',
             key: 'id'
@@ -117,7 +119,6 @@ const Product = sequelize.define('Product', {
     },
     orderDetailId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'OrderDetail',
             key: 'id'
@@ -127,9 +128,17 @@ const Product = sequelize.define('Product', {
     },
     favoriteId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'Favorite',
+            key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    },
+    itemCartId: {
+        type: DataTypes.UUID,
+        references: {
+            model: 'ItemCart',
             key: 'id'
         },
         onDelete: 'CASCADE',
@@ -138,11 +147,11 @@ const Product = sequelize.define('Product', {
 });
 
 // relacion
-// cupon de descuento (1-N), cultivo (N-N), efecto (N-N), variedad (N-N), comentario (N-1), ranking (N-1), sabor (N-N), detalle de orden
+// cupon de descuento (1-N), cultivo (N-N), efecto (N-N), variedad (N-N), comentario (N-1), ranking (N-1), sabor (N-N), detalle de orden (N-N)
 
-// relacion producto - detalle de orden (N-1)
-// Product.hasMany(OrderDetail, { foreignKey: 'productId', as: 'product' });
-// OrderDetail.belongsTo(Product, { foreignKey: 'orderdetailId', as: 'order' });
+// relacion producto - detalle de orden (N-N)
+// Product.belongsToMany(OrderDetail, { through: 'ProductOrderDetail', foreignKey: 'productId', as: 'product', otherKey: 'orderDetailId' });
+// OrderDetail.belongsToMany(Product, { through: 'ProductOrderDetail', foreignKey: 'orderdetailId', as: 'order', otherKey: 'productId' });
 
 
 module.exports = Product;

@@ -10,9 +10,11 @@ const Effect = sequelize.define('Effect', {
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: flase,
+        allowNull: false,
+        unique: true,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            isAlpha: true
         }
     },
     productId: {

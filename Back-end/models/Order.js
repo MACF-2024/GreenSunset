@@ -10,18 +10,24 @@ const Order = sequelize.define('Order', {
     },
     total: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isNumeric: true,
+            notEmpty: true
+        }
     },
     status: {
         type: DataTypes.ENUM('pending', 'paid', 'shipped', 'completed', 'cancelled'),
-        allowNull: false,
-        defaultValue: 'pending'
+        defaultValue: 'pending',
+        validate: {
+            isIn: [['pending', 'paid', 'shipped', 'completed', 'cancelled']]
+        }
     },
     userId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'Users',
+            model: 'User',
             key: 'id'
         },
         onDelete: 'CASCADE',

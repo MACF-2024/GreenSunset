@@ -12,14 +12,16 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            isAlpha: true
         }
     },
     lastName: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            isAlpha: true
         }
     },
     reprocann: {
@@ -31,7 +33,8 @@ const User = sequelize.define('User', {
         allowNull: false,
         unique: true,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            is: /^[a-zA-Z0-9_-]+$/i
         }
     },
     email: {
@@ -39,7 +42,8 @@ const User = sequelize.define('User', {
         allowNull: false,
         unique: true,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            isEmail: {msg: 'Email invalido'}
         }
     },
     password: {
@@ -47,7 +51,11 @@ const User = sequelize.define('User', {
         allowNull: false,
         unique: true,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            len: {
+                args: [8,22],
+                msg: 'La contraseña debe tener entre 8 y 22 caracteres'
+            }
         }
     },
     image: {
@@ -58,7 +66,8 @@ const User = sequelize.define('User', {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            isNumeric: true
         }
     },
     validation: {
@@ -71,7 +80,6 @@ const User = sequelize.define('User', {
     },
     residenceId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'Redidence',
             key: 'id'
@@ -91,7 +99,6 @@ const User = sequelize.define('User', {
     },
     orderId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'Order',
             key: 'id'
@@ -101,7 +108,6 @@ const User = sequelize.define('User', {
     },
     membreshipId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'Membreship',
             key: 'id'
@@ -113,7 +119,7 @@ const User = sequelize.define('User', {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'Favorites',
+            model: 'Favorite',
             key: 'id'
         },
         onDelete: 'CASCADE',
@@ -121,7 +127,6 @@ const User = sequelize.define('User', {
     },
     commentId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'Comment',
             key: 'id'
@@ -131,7 +136,6 @@ const User = sequelize.define('User', {
     },
     rankingId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'Ranking',
             key: 'id'
@@ -142,7 +146,7 @@ const User = sequelize.define('User', {
 });
 
 // relaciones
-// domicilio (1-1), carrito (1-1), membresias (1-N), ordenes (1-1), favoritos (1-1), comentario (N-1)
+// domicilio (1-1), carrito (1-1), membresias (1-N), ordenes (1-1), favoritos (1-1), comentario (N-1), ranking (N-1)
 
 // relacion usuario - carrito (1-1)
 // User.hasOne(Cart, { foreignKey: 'userId', as: 'cart' });

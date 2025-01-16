@@ -11,8 +11,10 @@ const Crop = sequelize.define('Crop', {
     name: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
-            notEmpty: true
+            notEmpty: true,
+            isAlpha: true
         }
     },
     productId: {
@@ -21,7 +23,9 @@ const Crop = sequelize.define('Crop', {
         references: {
             model: 'Product',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     }
 });
 

@@ -10,18 +10,26 @@ const Membreship = sequelize.define('Membreship', {
     },
     name: {
         type: DataTypes.STRING,
-        defaultValue: 'Nueva membresia',
-        unique: true
+        allowNull: false,
+        unique: true,
+        validate: {
+            isAlpha: true,
+            notEmpty: true
+        }
     },
     image: {
         type: DataTypes.BLOB('long')
     },
     price: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        validate: {
+            isFloat: true
+        }
     },
-    descount: {
-        type: DataTypes.INTEGER
+    discount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     },
     amount: {
         type: DataTypes.INTEGER,
@@ -37,7 +45,6 @@ const Membreship = sequelize.define('Membreship', {
     },
     userId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'User',
             key: 'id'
@@ -47,7 +54,6 @@ const Membreship = sequelize.define('Membreship', {
     },
     discountCouponId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'DiscountCoupon',
             key: 'id'

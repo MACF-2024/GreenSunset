@@ -10,7 +10,10 @@ const Cart = sequelize.define('Cart', {
     },
     total: {
         type: DataTypes.DECIMAL(10, 2),
-        defaultValue: 0
+        validate: {
+            isFloat: true,
+            isNumeric: true
+        }
     },
     userId: {
         type: DataTypes.UUID,
@@ -24,7 +27,6 @@ const Cart = sequelize.define('Cart', {
     },
     itemId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'ItemCart',
             key: 'id'
@@ -34,7 +36,6 @@ const Cart = sequelize.define('Cart', {
     },
     discountCouponId: {
         type: DataTypes.UUID,
-        allowNull: false,
         references: {
             model: 'DiscountCoupon',
             key: 'id'
@@ -44,7 +45,10 @@ const Cart = sequelize.define('Cart', {
     },
     status: {
         type: DataTypes.ENUM('active', 'abandoned', 'completed'),
-        defaultValue: 'abandoned'
+        defaultValue: 'abandoned',
+        validate: {
+            isIn: [['active', 'abandoned', 'completed']]
+        }
     }
 });
 
