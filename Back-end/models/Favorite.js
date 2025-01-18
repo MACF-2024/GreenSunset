@@ -2,30 +2,17 @@ const { DataTypes } = require('sequelize');
 const { v4:uuidv4 } = require('uuid');
 const sequelize= require('../db-sequelize');
 
-const Favorite = sequelize.define('Favorite', {
+const Favorite = sequelize.define('favorites', {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
         primaryKey: true
     },
     productId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'Product',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     userId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'User',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     }
 });
 

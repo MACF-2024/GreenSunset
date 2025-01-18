@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const sequelize = require('../db-sequelize');
 
-const Cart = sequelize.define('Cart', {
+const Cart = sequelize.define('carts', {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
@@ -17,35 +17,15 @@ const Cart = sequelize.define('Cart', {
     },
     userId: {
         type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'User',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
     },
     itemId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'ItemCart',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     discountCouponId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'DiscountCoupon',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     status: {
         type: DataTypes.ENUM('active', 'abandoned', 'completed'),
-        defaultValue: 'abandoned',
         validate: {
             isIn: [['active', 'abandoned', 'completed']]
         }

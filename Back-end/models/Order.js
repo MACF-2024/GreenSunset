@@ -2,7 +2,7 @@ const { DataTypes, NOW } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const sequelize = require('../db-sequelize');
 
-const Order = sequelize.define('Order', {
+const Order = sequelize.define('orders', {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
@@ -10,7 +10,6 @@ const Order = sequelize.define('Order', {
     },
     total: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
         validate: {
             isNumeric: true,
             notEmpty: true
@@ -18,38 +17,21 @@ const Order = sequelize.define('Order', {
     },
     status: {
         type: DataTypes.ENUM('pending', 'paid', 'shipped', 'completed', 'cancelled'),
-        defaultValue: 'pending',
         validate: {
             isIn: [['pending', 'paid', 'shipped', 'completed', 'cancelled']]
         }
     },
     userId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'User',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     orderDetailId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'OrderDetail',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     createAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        type: DataTypes.DATE
     },
     updateAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        type: DataTypes.DATE
     }
 });
 

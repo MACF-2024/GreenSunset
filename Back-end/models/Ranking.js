@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const sequelize = require('../db-sequelize');
 
-const Ranking = sequelize.define('Ranking', {
+const Ranking = sequelize.define('rankings', {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
@@ -16,24 +16,10 @@ const Ranking = sequelize.define('Ranking', {
         }
     },
     productId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Product',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     userId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'User',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     }
 });
 
@@ -47,6 +33,5 @@ const Ranking = sequelize.define('Ranking', {
 // relacion ranking - producto (N-1)
 // Ranking.hasMany(User, { foreignKey: 'userId', as: 'user' });
 // User.belongsTo(Ranking, { foreignKey: 'rankingId', as: 'ranking' });
-
 
 module.exports = Ranking;
