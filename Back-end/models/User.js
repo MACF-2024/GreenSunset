@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const sequelize = require('../db-sequelize');
 
-const User = sequelize.define('User', {
+const User = sequelize.define('users', {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
@@ -10,7 +10,6 @@ const User = sequelize.define('User', {
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false,
         validate: {
             notEmpty: true,
             isAlpha: true
@@ -18,20 +17,16 @@ const User = sequelize.define('User', {
     },
     lastName: {
         type: DataTypes.STRING,
-        allowNull: false,
         validate: {
             notEmpty: true,
             isAlpha: true
         }
     },
     reprocann: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+        type: DataTypes.BOOLEAN
     },
     username: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
         validate: {
             notEmpty: true,
             is: /^[a-zA-Z0-9_-]+$/i
@@ -39,8 +34,6 @@ const User = sequelize.define('User', {
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
         validate: {
             notEmpty: true,
             isEmail: {msg: 'Email invalido'}
@@ -48,8 +41,6 @@ const User = sequelize.define('User', {
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
         validate: {
             notEmpty: true,
             len: {
@@ -59,89 +50,47 @@ const User = sequelize.define('User', {
         }
     },
     image: {
-        type: DataTypes.BLOB('long'),
-        allowNull: true
+        type: DataTypes.BLOB('long')
     },
     age: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         validate: {
             notEmpty: true,
             isNumeric: true
         }
     },
     validation: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
+        type: DataTypes.BOOLEAN
     },
     isAdmin: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+        type: DataTypes.BOOLEAN
     },
     residenceId: {
         type: DataTypes.UUID,
         references: {
-            model: 'Redidence',
+            model: 'residences',
             key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+          },
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE'
     },
     cartId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Cart',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     orderId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'Order',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     membreshipId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'Membreship',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     favoritesId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Favorite',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     commentId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'Comment',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     rankingId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'Ranking',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     }
 });
 

@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const sequelize = require('../db-sequelize');
 
-const Membreship = sequelize.define('Membreship', {
+const Membreship = sequelize.define('membreships', {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
@@ -10,8 +10,6 @@ const Membreship = sequelize.define('Membreship', {
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
         validate: {
             isAlpha: true,
             notEmpty: true
@@ -22,44 +20,27 @@ const Membreship = sequelize.define('Membreship', {
     },
     price: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
         validate: {
             isFloat: true
         }
     },
     discount: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
+        type: DataTypes.INTEGER
     },
     amount: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
+        type: DataTypes.INTEGER
     },
     description: {
-        type: DataTypes.TEXT('long'),
-        allowNull: false
+        type: DataTypes.TEXT('long')
     },
     validation: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
+        type: DataTypes.BOOLEAN
     },
     userId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'User',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     discountCouponId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'DiscountCoupon',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     }
 });
 

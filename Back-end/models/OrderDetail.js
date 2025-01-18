@@ -2,42 +2,26 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4, validate } = require('uuid');
 const sequelize = require('../db-sequelize');
 
-const OrderDetail = sequelize.define('OrderDetail', {
+const OrderDetail = sequelize.define('orderDetails', {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
         primaryKey: true
     },
     orderId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Order',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     productId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Product',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     quantity: {
         type: DataTypes.INTEGER,
-        defaultValue: 0,
         validate: {
             isNumeric: true
         }
     },
     price: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
         validate: {
             notEmpty: true,
             isNumeric: true
@@ -45,7 +29,6 @@ const OrderDetail = sequelize.define('OrderDetail', {
     },
     subtotal: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
         validate: {
             notEmpty: true,
             isNumeric: true

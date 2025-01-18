@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const sequelize = require('../db-sequelize');
 
-const Comment = sequelize.define('Comment', {
+const Comment = sequelize.define('comments', {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
@@ -10,30 +10,15 @@ const Comment = sequelize.define('Comment', {
     },
     comment: {
         type: DataTypes.TEXT('long'),
-        allowNull: false,
         validate: {
             notEmpty: true
         }
     },
     userId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'User',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     productId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Product',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     }
 });
 
@@ -47,6 +32,5 @@ const Comment = sequelize.define('Comment', {
 // relacion comentario - usuario (N-1)
 // Comment.hasMany(User, { foreignKey: 'commentId', as: 'comment' });
 // User.belongsTo(Comment, { foreignKey: 'userId', as: 'user' });
-
 
 module.exports = Comment;

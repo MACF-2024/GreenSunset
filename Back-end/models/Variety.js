@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const sequelize = require('../db-sequelize');
 
-const Variety = sequelize.define('Variety', {
+const Variety = sequelize.define('varietys', {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
@@ -10,21 +10,13 @@ const Variety = sequelize.define('Variety', {
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false,
         validate: {
             notEmpty: true,
             isAlpha: true
         }
     },
     productId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Product',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     }
 });
 
@@ -34,6 +26,5 @@ const Variety = sequelize.define('Variety', {
 // relacion variedad - producto (N-N)
 // Variety.belongsToMany(Product, { through: 'ProductVariety', foreignKey: 'productId', as: 'product', otherKey: 'varietyId' });
 // Product.belongsToMany(Variety, { through: 'ProductVariety', foreignKey: 'varietyId', as: 'variety', otherKey: 'productId' });
-
 
 module.exports = Variety;

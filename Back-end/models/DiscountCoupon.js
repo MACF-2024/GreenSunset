@@ -2,42 +2,23 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const sequelize = require('../db-sequelize');
 
-const DiscountCoupon = sequelize.define('DiscountCoupon', {
+const DiscountCoupon = sequelize.define('discountCoupons', {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
         primaryKey: true
     },
     discount: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
+        type: DataTypes.INTEGER
     },
     productId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'Product',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     cartId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'Cart',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type: DataTypes.UUID
     },
     mebreshipId: {
-        type:DataTypes.UUID,
-        references: {
-            model: 'Membreship',
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        type:DataTypes.UUID
     }
 });
 

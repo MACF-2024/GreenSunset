@@ -10,35 +10,35 @@ const Favorite = require('../models/Favorite');
 
 
 // relacion cupon de descuanto - producto (1-N)
-DiscountCoupon.hasMany(Product, { foreignKey: 'productId', as: 'product' });
-Product.belongsTo(DiscountCoupon, { foreignKey: 'discountCouponId', as: 'coupon' });
+DiscountCoupon.hasMany(Product, { foreignKey: 'productId', as: 'products' });
+Product.belongsTo(DiscountCoupon, { foreignKey: 'discountCouponId', as: 'coupons' });
 
 // relacion efecto - producto (N-N)
-Effect.belongsToMany(Product, { through: 'ProductEffect', foreignKey: 'productId', as: 'product', otherKey: 'effectId' });
-Product.belongsToMany(Effect, { through: 'ProductEffect', foreignKey: 'effectId', as: 'effect', otherKey: 'productId' });
+Effect.belongsToMany(Product, { through: 'ProductEffect', foreignKey: 'productId', as: 'products', otherKey: 'effectId' });
+Product.belongsToMany(Effect, { through: 'ProductEffect', foreignKey: 'effectId', as: 'effects', otherKey: 'productId' });
 
 // relacion variedad - producto (N-N)
-Variety.belongsToMany(Product, { through: 'ProductVariety', foreignKey: 'productId', as: 'product', otherKey: 'varietyId' });
-Product.belongsToMany(Variety, { through: 'ProductVariety', foreignKey: 'varietyId', as: 'variety', otherKey: 'productId' });
+Variety.belongsToMany(Product, { through: 'ProductVariety', foreignKey: 'productId', as: 'products', otherKey: 'varietyId' });
+Product.belongsToMany(Variety, { through: 'ProductVariety', foreignKey: 'varietyId', as: 'varietys', otherKey: 'productId' });
 
 // relacion comentario - producto (N-1)
-Comment.hasMany(Product, { foreignKey: 'productId', as: 'product' });
-Product.belongsTo(Comment, { foreignKey: 'commentId', as: 'comment' });
+Comment.hasMany(Product, { foreignKey: 'productId', as: 'products' });
+Product.belongsTo(Comment, { foreignKey: 'commentId', as: 'comments' });
 
 // relacion ranking - producto (N-1)
-Ranking.hasMany(Product, { foreignKey: 'productId', as: 'product' });
-Product.belongsTo(Ranking, { foreignKey: 'rankingId', as: 'ranking' });
+Ranking.hasMany(Product, { foreignKey: 'productId', as: 'products' });
+Product.belongsTo(Ranking, { foreignKey: 'rankingId', as: 'rankings' });
 
 // relacion sabor - producto (N-N)
-Taste.belongsToMany(Product, { through: 'ProductTaste', foreignKey: 'productId', as: 'product', otherKey: 'tasteId' });
-Product.belongsToMany(Variety, { through: 'ProductTaste', foreignKey: 'tasteId', as: 'taste', otherKey: 'productId' });
+Taste.belongsToMany(Product, { through: 'ProductTaste', foreignKey: 'productId', as: 'products', otherKey: 'tasteId' });
+Product.belongsToMany(Variety, { through: 'ProductTaste', foreignKey: 'tasteId', as: 'tastes', otherKey: 'productId' });
 
 // relacion cultivo - producto (1-N)
-Crop.hasMany(Product, { foreignKey: 'productId', as: 'product' });
-Product.belongsTo(Crop, { foreignKey: 'cropId', as: 'crop' });
+Crop.hasMany(Product, { foreignKey: 'productId', as: 'products' });
+Product.belongsTo(Crop, { foreignKey: 'cropId', as: 'crops' });
 
 // relacion sabor - producto (N-N)
-Favorite.belongsToMany(Product, { through: 'ProductFavorite', foreignKey: 'productId', as: 'product', otherKey: 'favoriteId' });
-Product.belongsToMany(Favorite, { through: 'ProductFavorite', foreignKey: 'favoriteId', as: 'favorite', otherKey: 'productId' });
+Favorite.belongsToMany(Product, { through: 'ProductFavorite', foreignKey: 'productId', as: 'products', otherKey: 'favoriteId' });
+Product.belongsToMany(Favorite, { through: 'ProductFavorite', foreignKey: 'favoriteId', as: 'favorites', otherKey: 'productId' });
 
 module.exports = { DiscountCoupon, Crop, Taste, Product, Effect, Variety, Comment, Ranking, Favorite };

@@ -6,19 +6,19 @@ const Product = require('../models/Product');
 
 
 // relacion usuario - carrito (1-1)
-User.hasOne(Cart, { foreignKey: 'userId', as: 'cart' });
-Cart.belongsTo(User, { foreignKey: 'cartId', as: 'user' });
+User.hasOne(Cart, { foreignKey: 'userId', as: 'carts' });
+Cart.belongsTo(User, { foreignKey: 'cartId', as: 'users' });
 
 // relacion item del carrito - carrito (N-1)
-ItemCart.hasMany(Cart, { foreignKey: 'itemId', as: 'cart' });
-Cart.belongsTo(ItemCart, { foreignKey: 'cartId', as: 'itemCart' });
+ItemCart.hasMany(Cart, { foreignKey: 'itemId', as: 'carts' });
+Cart.belongsTo(ItemCart, { foreignKey: 'cartId', as: 'itemCarts' });
 
 // relacion cupon de descuento - carrito (1-N)
-DiscountCoupon.hasMany(Cart, { foreignKey: 'discountCouponId', as: 'coupon' });
-Cart.belongsTo(DiscountCoupon, { foreignKey: 'cartId', as: 'discountCart' });
+DiscountCoupon.hasMany(Cart, { foreignKey: 'discountCouponId', as: 'coupons' });
+Cart.belongsTo(DiscountCoupon, { foreignKey: 'cartId', as: 'discountCarts' });
 
 // relacion producto - item de carrito (N-1)
 Product.hasMany(ItemCart, { foreignKey: 'productId', as: 'items' });
-ItemCart.belongsTo(Product, { foreignKey: 'itemCartId', as: 'itemCart' });
+ItemCart.belongsTo(Product, { foreignKey: 'itemCartId', as: 'itemCarts' });
 
 module.exports = { User, ItemCart, DiscountCoupon, Cart, Product };
