@@ -1,105 +1,40 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db-sequelize');
-
-const User = sequelize.define('users', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    name: {
-        type: DataTypes.STRING,
-        validate: {
-            notEmpty: true,
-            isAlpha: true
-        }
-    },
-    lastName: {
-        type: DataTypes.STRING,
-        validate: {
-            notEmpty: true,
-            isAlpha: true
-        }
-    },
-    reprocann: {
-        type: DataTypes.BOOLEAN
-    },
-    username: {
-        type: DataTypes.STRING,
-        validate: {
-            notEmpty: true,
-            is: /^[a-zA-Z0-9_-]+$/i
-        }
-    },
-    email: {
-        type: DataTypes.STRING,
-        validate: {
-            notEmpty: true,
-            isEmail: {msg: 'Email invalido'}
-        }
-    },
-    password: {
-        type: DataTypes.STRING,
-        validate: {
-            notEmpty: true,
-            len: {
-                args: [8,22],
-                msg: 'La contraseña debe tener entre 8 y 22 caracteres'
-            }
-        }
-    },
-    image: {
-        type: DataTypes.BLOB('long')
-    },
-    age: {
-        type: DataTypes.INTEGER,
-        validate: {
-            notEmpty: true,
-            isNumeric: true
-        }
-    },
-    validation: {
-        type: DataTypes.BOOLEAN
-    },
-    isAdmin: {
-        type: DataTypes.BOOLEAN
-    },
-    residenceId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'residences',
-            key: 'id'
-          },
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE'
-    },
-    cartId: {
-        type: DataTypes.UUID
-    },
-    orderId: {
-        type: DataTypes.UUID
-    },
-    membreshipId: {
-        type: DataTypes.UUID
-    },
-    favoritesId: {
-        type: DataTypes.UUID
-    },
-    commentId: {
-        type: DataTypes.UUID
-    },
-    rankingId: {
-        type: DataTypes.UUID
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class User extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      User.belongsTo(models.Residence, { foreignKey: 'residenceId', as:'residence' });
+      User.hasMany(models.Comment, { foreignKey: 'userId', as:'comment' });
+      User.hasMany(models.Ranking, { foreignKey: 'userId', as:'ranking' });
+      User.hasMany(models.Order, { foreignKey: 'userId', as:'order' });
+      User.hasOne(models.Cart, { foreignKey: 'userId', as:'cart' }); 
+      User.hasOne(models.Membership, { foreignKey: 'userId', as:'membership' });
+      User.belongsToMany(models.Product, { through: 'Favorite', foreignKey: 'userId', as:'favorites' });
     }
-});
-
-// relaciones
-// domicilio (1-1), carrito (1-1), membresias (1-N), ordenes (1-1), favoritos (1-1), comentario (N-1), ranking (N-1)
-
-// relacion usuario - carrito (1-1)
-// User.hasOne(Cart, { foreignKey: 'userId', as: 'cart' });
-// Cart.belongsTo(User, { foreignKey: 'cartId', as: 'user' });
-
-
-module.exports = User;
+  }
+  User.init({
+    name: DataTypes.STRING,
+    email: DataTypes.STRING,
+    password: DataTypes.STRING,
+    lastName: DataTypes.STRING,
+    reprocann: DataTypes.BOOLEAN,
+    username: DataTypes.STRING,
+    image: DataTypes.BLOB,
+    age: DataTypes.INTEGER,
+    isAdmin: DataTypes.BOOLEAN,
+    validation: DataTypes.BOOLEAN,
+    residenceId: DataTypes.UUID,
+  }, {
+    sequelize,
+    modelName: 'User',
+  });
+  return User;
+};

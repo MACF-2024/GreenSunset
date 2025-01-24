@@ -1,31 +1,26 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db-sequelize');
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Effect extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
 
-const Effect = sequelize.define('effects', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    name: {
-        type: DataTypes.STRING,
-        validate: {
-            notEmpty: true,
-            isAlpha: true
-        }
-    },
-    productId: {
-        type: DataTypes.UUID
+      // producto - efecto (N-N)
+      Effect.belongsToMany(models.Product, { through: 'ProductEffect' , foreignKey: 'effectId', as:'products' });
     }
-});
-
-// relaciones
-// producto (N-N)
-
-// relacion efecto - producto (N-N)
-// Effect.belongsToMany(Product, { through: 'ProductEffect', foreignKey: 'productId', as: 'product', otherKey: 'effectId' });
-// Product.belongsToMany(Effect, { through: 'ProductEffect', foreignKey: 'effectId', as: 'effect', otherKey: 'productId' });
-
-
-module.exports = Effect;
+  }
+  Effect.init({
+    name: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Effect',
+  });
+  return Effect;
+};

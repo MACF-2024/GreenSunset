@@ -1,49 +1,27 @@
-const { DataTypes, NOW } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db-sequelize');
-
-const Order = sequelize.define('orders', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    total: {
-        type: DataTypes.DECIMAL(10, 2),
-        validate: {
-            isNumeric: true,
-            notEmpty: true
-        }
-    },
-    status: {
-        type: DataTypes.ENUM('pending', 'paid', 'shipped', 'completed', 'cancelled'),
-        validate: {
-            isIn: [['pending', 'paid', 'shipped', 'completed', 'cancelled']]
-        }
-    },
-    userId: {
-        type: DataTypes.UUID
-    },
-    orderDetailId: {
-        type: DataTypes.UUID
-    },
-    createAt: {
-        type: DataTypes.DATE
-    },
-    updateAt: {
-        type: DataTypes.DATE
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Order extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      Order.belongsTo(models.User, { foreignKey: 'userId', as:'user' });
+      Order.hasMany(models.OrderDetail, { foreignKey: 'orderId', as:'orderDetail' });
     }
-});
-
-// realciones
-// usuario (1-1), detalle de orden (1-1)
-
-// relacion orden de compra - usuario (1-1)
-// Order.hasOne(User, { foreignKey: 'userId', as: 'user' });
-// User.belongsTo(Order, { foreignKey: 'orderId', as: 'order' });
-
-// relacion orden - detalle de orden (1-1)
-// Order.hasOne(OrderDetail, { foreignKey: 'orderId', as: 'order'});
-// OrderDetail.belongsTo(Order, { foreignKey: 'OrderDetailId', as: 'detail'});
-
-module.exports = Order;
+  }
+  Order.init({
+    total: DataTypes.DECIMAL,
+    status: DataTypes.ENUM('pending','paid','shipped','completed','cancelled'),
+    userId: DataTypes.UUID
+  }, {
+    sequelize,
+    modelName: 'Order',
+  });
+  return Order;
+};

@@ -1,33 +1,26 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db-sequelize');
-
-const ItemCart = sequelize.define('itemCarts', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    quantity: {
-        type: DataTypes.INTEGER
-    },
-    cartId: {
-        type: DataTypes.UUID
-    },
-    productId: {
-        type: DataTypes.UUID
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class ItemCart extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      ItemCart.belongsTo(models.Cart, { foreignKey:'cartId', as:'cart' });
+      ItemCart.belongsToMany(models.Product, { through:'ItemCartProduct', foreignKey:'itemCartId', as:'products' });
     }
-});
-
-// relaciones
-// carrito (1-N), producto (N-1)
-
-// relacion item del carrito - carrito (N-1)
-// ItemCart.hasMany(Cart, { foreignKey: 'itemId', as: 'cart' });
-// Cart.belongsTo(ItemCart, { foreignKey: 'cartId', as: 'itemCart' });
-
-// relacion producto - item de carrito (N-1)
-// Product.hasMany(ItemCart, { foreignKey: 'productId', as: 'items' });
-// ItemCart.belongsTo(Product, { foreignKey: 'itemCartId', as: 'itemCart' });
-
-module.exports = ItemCart;
+  }
+  ItemCart.init({
+    quantity: DataTypes.INTEGER,
+    cartId: DataTypes.UUID
+  }, {
+    sequelize,
+    modelName: 'ItemCart',
+  });
+  return ItemCart;
+};

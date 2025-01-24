@@ -1,42 +1,28 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4, validate } = require('uuid');
-const sequelize = require('../db-sequelize');
-
-const OrderDetail = sequelize.define('orderDetails', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    orderId: {
-        type: DataTypes.UUID
-    },
-    productId: {
-        type: DataTypes.UUID
-    },
-    quantity: {
-        type: DataTypes.INTEGER,
-        validate: {
-            isNumeric: true
-        }
-    },
-    price: {
-        type: DataTypes.DECIMAL(10, 2),
-        validate: {
-            notEmpty: true,
-            isNumeric: true
-        }
-    },
-    subtotal: {
-        type: DataTypes.DECIMAL(10, 2),
-        validate: {
-            notEmpty: true,
-            isNumeric: true
-        }
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class OrderDetail extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      OrderDetail.belongsToMany(models.Product, { through: 'ProductOrderDetail', foreignKey: 'productId', as:'products' });
+      OrderDetail.belongsTo(models.Order, { foreignKey: 'orderId', as:'order' });
     }
-});
-
-// relaciones
-// ordenes (1-1), productos (N-1)
-
-module.exports = OrderDetail;
+  }
+  OrderDetail.init({
+    quantity: DataTypes.INTEGER,
+    price: DataTypes.DECIMAL,
+    subtotal: DataTypes.DECIMAL,
+    orderId: DataTypes.UUID
+  }, {
+    sequelize,
+    modelName: 'OrderDetail',
+  });
+  return OrderDetail;
+};

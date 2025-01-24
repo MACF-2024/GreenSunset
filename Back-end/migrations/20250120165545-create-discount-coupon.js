@@ -1,22 +1,26 @@
 'use strict';
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('discountCoupons', {
+    await queryInterface.createTable('DiscountCoupons', {
       id: {
+        allowNull: false,
+        primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
-        primaryKey: true
       },
       discount: {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
+      validation: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
+      },
       productId: {
-        type: Sequelize.UUID,
+        type: Sequelize .UUID,
         references: {
-          model: 'products',
+          model: 'Products',
           key: 'id'
         },
         onDelete: 'CASCADE',
@@ -25,23 +29,32 @@ module.exports = {
       cartId: {
         type: Sequelize.UUID,
         references: {
-          model: 'carts',
+          model: 'Carts',
           key: 'id'
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       },
-      mebreshipId: {
+      membershipId: {
         type: Sequelize.UUID,
         references: {
-          model: 'membreships',
+          model: 'Memberships',
           key: 'id'
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
       }
     });
   },
-
-  async down(queryInterface, Sequelize) { await queryInterface.dropTable('discountCoupons') }
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('DiscountCoupons');
+  }
 };

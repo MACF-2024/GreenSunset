@@ -1,30 +1,26 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db-sequelize');
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Variety extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
 
-const Variety = sequelize.define('varietys', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    name: {
-        type: DataTypes.STRING,
-        validate: {
-            notEmpty: true,
-            isAlpha: true
-        }
-    },
-    productId: {
-        type: DataTypes.UUID
+      // producto - variedad (N-N)
+      Variety.belongsToMany(models.Product, { through: 'ProductVariety' , foreignKey: 'varietyId', as:'products' });
     }
-});
-
-// relaciones 
-// productos (N-N)
-
-// relacion variedad - producto (N-N)
-// Variety.belongsToMany(Product, { through: 'ProductVariety', foreignKey: 'productId', as: 'product', otherKey: 'varietyId' });
-// Product.belongsToMany(Variety, { through: 'ProductVariety', foreignKey: 'varietyId', as: 'variety', otherKey: 'productId' });
-
-module.exports = Variety;
+  }
+  Variety.init({
+    name: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Variety',
+  });
+  return Variety;
+};

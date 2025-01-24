@@ -1,64 +1,29 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db-sequelize');
-
-const Residence = sequelize.define('residences', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    street: {
-        type: DataTypes.STRING,
-        validate: {
-            isAlphanumeric: true,
-            notEmpty: true
-        }
-    },
-    zipCode: {
-        type: DataTypes.INTEGER,
-        validate: {
-            isNumeric: true,
-            notEmpty: true
-        }
-    },
-    type: {
-        type: DataTypes.ENUM('house', 'departament'),
-        validate: {
-            isIn: [['house', 'departament']]
-        }
-    },
-    number: {
-        type: DataTypes.INTEGER,
-        validate: {
-            isNumeric: true,
-            notEmpty: true
-        }
-    },
-    location: {
-        type: DataTypes.STRING,
-        validate: {
-            isAlpha: true,
-            notEmpty: true
-        }
-    },
-    province: {
-        type: DataTypes.STRING,
-        validate: {
-            isAlpha: true,
-            notEmpty: true
-        }
-    },
-    userId: {
-        type: DataTypes.UUID
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Residence extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      Residence.hasOne(models.User, { foreignKey: 'residenceId', as:'user' });
     }
-});
-
-// relaciones
-// usuario (1-1)
-
-// relacion domicilio - usuario (1-1)
-// Residence.hasOne(User, { foreignKey: 'userId', as: 'user' });
-// User.belongsTo(Residence, { foreignKey: 'residenceId', as: 'residence' });
-
-module.exports = Residence;
+  }
+  Residence.init({
+    street: DataTypes.STRING,
+    zipCode: DataTypes.INTEGER,
+    types: DataTypes.ENUM('house', 'departament', 'other'),
+    number: DataTypes.INTEGER,
+    location: DataTypes.STRING,
+    province: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Residence',
+  });
+  return Residence;
+};

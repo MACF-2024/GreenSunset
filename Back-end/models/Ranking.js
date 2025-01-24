@@ -1,37 +1,27 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db-sequelize');
-
-const Ranking = sequelize.define('rankings', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    ranking: {
-        type: DataTypes.ENUM('uno', 'dos', 'tres', 'cuatro', 'cinco'),
-        validate: {
-            isIn: [['uno', 'dos', 'tres', 'cuatro', 'cinco']],
-            notEmpty: true
-        }
-    },
-    productId: {
-        type: DataTypes.UUID
-    },
-    userId: {
-        type: DataTypes.UUID
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Ranking extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      Ranking.belongsTo(models.Product, { foreignKey: 'productId', as:'products' });
+      Ranking.belongsTo(models.User, { foreignKey: 'userId', as:'users' });
     }
-});
-
-// relaciones
-// usuario (1-N), producto (1-N)
-
-// relacion ranking - producto (N-1)
-// Ranking.hasMany(Product, { foreignKey: 'productId', as: 'product' });
-// Product.belongsTo(Ranking, { foreignKey: 'rankingId', as: 'ranking' });
-
-// relacion ranking - producto (N-1)
-// Ranking.hasMany(User, { foreignKey: 'userId', as: 'user' });
-// User.belongsTo(Ranking, { foreignKey: 'rankingId', as: 'ranking' });
-
-module.exports = Ranking;
+  }
+  Ranking.init({
+    ranking: DataTypes.ENUM('uno','dos','tres','cuatro','cinco','sin'),
+    productId: DataTypes.UUID,
+    userId: DataTypes.UUID
+  }, {
+    sequelize,
+    modelName: 'Ranking',
+  });
+  return Ranking;
+};
