@@ -1,40 +1,30 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db-sequelize');
-
-const DiscountCoupon = sequelize.define('discountCoupons', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    discount: {
-        type: DataTypes.INTEGER
-    },
-    productId: {
-        type: DataTypes.UUID
-    },
-    cartId: {
-        type: DataTypes.UUID
-    },
-    mebreshipId: {
-        type:DataTypes.UUID
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class DiscountCoupon extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      DiscountCoupon.belongsTo(models.Product, { foreignKey: 'productId', as:'product' });
+      DiscountCoupon.belongsTo(models.Cart, { foreignKey: 'cartId', as:'cart' });
+      DiscountCoupon.belongsTo(models.Membership, { foreignKey: 'membershipId', as:'membreship' });
     }
-});
-
-// relaciones
-// productos (1-N), carrito (1-N), membresia (1-N)
-
-// relacion cupon de descuento - carrito (1-N) ---> CREADO (cartRelation.js)
-// DiscountCoupon.hasOne(Cart, { foreignKey: 'discountCouponId', as: 'coupon' });
-// Cart.belongsTo(DiscountCoupon, { foreignKey: 'cartId', as: 'discountCart' });
-
-// relacion cupon de descuanto - producto (1-N)
-// DiscountCoupon.hasOne(Product, { foreignKey: 'productId', as: 'product' });
-// Product.belongsTo(DiscountCoupon, { foreignKey: 'discountCouponId', as: 'coupon' });
-
-// relacion membresia - cupon de descuento (1-1)
-// Membreship.hasOne(DiscountCoupon, { foreignKey: 'membreshipId', as: 'membreship' });
-// DiscountCoupon.belongTo(Membreship, { foreignKey: 'discountCouponId', as: 'coupon' });
-
-module.exports = DiscountCoupon;
+  }
+  DiscountCoupon.init({
+    discount: DataTypes.INTEGER,
+    validation: DataTypes.BOOLEAN,
+    productId: DataTypes.UUID,
+    cartId: DataTypes.UUID,
+    membershipId: DataTypes.UUID
+  }, {
+    sequelize,
+    modelName: 'DiscountCoupon',
+  });
+  return DiscountCoupon;
+};

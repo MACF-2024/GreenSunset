@@ -1,86 +1,41 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db-sequelize');
-
-const Product = sequelize.define('products', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    name: {
-        type: DataTypes.STRING,
-        validate: {
-            notEmpty: true,
-            isAlpha: true
-        }
-    },
-    image: {
-        type: DataTypes.BLOB('long')
-    },
-    price: {
-        type: DataTypes.DECIMAL(10, 2),
-        validate: {
-            isNumeric: true,
-            notEmpty: true
-        }
-    },
-    description: {
-        type: DataTypes.TEXT('long'),
-        validate: {
-            notEmpty: true
-        }
-    },
-    quantity: {
-        type: DataTypes.INTEGER
-    },
-    like: {
-        type: DataTypes.INTEGER
-    },
-    commentId: {
-        type: DataTypes.UUID
-    },
-    rankingId: {
-        type: DataTypes.UUID
-    },
-    tasteId: {
-        type: DataTypes.UUID
-    },
-    varietyId: {
-        type: DataTypes.UUID
-    },
-    effectId: {
-        type: DataTypes.UUID
-    },
-    cropId: {
-        type: DataTypes.UUID
-    },
-    discount: {
-        type: DataTypes.INTEGER
-    },
-    validation: {
-        type: DataTypes.BOOLEAN
-    },
-    discountCouponId: {
-        type: DataTypes.UUID
-    },
-    orderDetailId: {
-        type: DataTypes.UUID
-    },
-    favoriteId: {
-        type: DataTypes.UUID
-    },
-    itemCartId: {
-        type: DataTypes.UUID
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Product extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      Product.belongsToMany(models.Effect, { through: 'ProductEffect', foreignKey: 'productId', as:'effect' });
+      Product.belongsToMany(models.Taste, { through: 'ProductTaste', foreignKey: 'productId', as:'taste' });
+      Product.belongsToMany(models.Variety, { through: 'ProductVariety', foreignKey: 'productId', as:'varieties' });
+      Product.belongsTo(models.Crop, { foreignKey: 'cropId', as:'crop' });
+      Product.hasMany(models.Comment, { foreignKey: 'productId', as:'comment' });
+      Product.hasMany(models.Ranking, { foreignKey: 'productId', as:'ranking' });
+      Product.belongsToMany(models.User, { through: 'Favorite', foreignKey: 'productId', as:'favoriteProducts' });
+      Product.belongsToMany(models.ItemCart, { through: 'ItemCartProduct', foreignKey: 'productId', as:'itemsCart' });
+      Product.hasOne(models.DiscountCoupon, { foreignKey: 'productId', as:'discountCoupon' });
+      Product.belongsToMany(models.OrderDetail, { through: 'ProductOrderDetail', foreignKey: 'productId', as:'orderDetails' });
     }
-});
-
-// relacion
-// cupon de descuento (1-N), cultivo (N-N), efecto (N-N), variedad (N-N), comentario (N-1), ranking (N-1), sabor (N-N), detalle de orden (N-N)
-
-// relacion producto - detalle de orden (N-N)
-// Product.belongsToMany(OrderDetail, { through: 'ProductOrderDetail', foreignKey: 'productId', as: 'product', otherKey: 'orderDetailId' });
-// OrderDetail.belongsToMany(Product, { through: 'ProductOrderDetail', foreignKey: 'orderdetailId', as: 'order', otherKey: 'productId' });
-
-
-module.exports = Product;
+  }
+  Product.init({
+    name: DataTypes.STRING,
+    image: DataTypes.BLOB,
+    price: DataTypes.DECIMAL,
+    description: DataTypes.TEXT,
+    stock: DataTypes.INTEGER,
+    like: DataTypes.INTEGER,
+    discount: DataTypes.INTEGER,
+    validation: DataTypes.BOOLEAN,
+    cropId: DataTypes.UUID
+  }, {
+    sequelize,
+    modelName: 'Product',
+  });
+  return Product;
+};

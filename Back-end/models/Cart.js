@@ -1,38 +1,27 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db-sequelize');
-
-const Cart = sequelize.define('carts', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    total: {
-        type: DataTypes.DECIMAL(10, 2),
-        validate: {
-            isFloat: true,
-            isNumeric: true
-        }
-    },
-    userId: {
-        type: DataTypes.UUID,
-    },
-    itemId: {
-        type: DataTypes.UUID
-    },
-    discountCouponId: {
-        type: DataTypes.UUID
-    },
-    status: {
-        type: DataTypes.ENUM('active', 'abandoned', 'completed'),
-        validate: {
-            isIn: [['active', 'abandoned', 'completed']]
-        }
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Cart extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      Cart.belongsTo(models.User, { foreignKey: 'userId', as:'user' });
+      Cart.hasOne(models.DiscountCoupon, { foreignKey: 'cartId', as:'discountCoupon' });
+      Cart.hasOne(models.ItemCart, { foreignKey: 'cartId', as:'items' });
     }
-});
-
-// relaciones
-// usuario (1-1), item del carrito (1-N), cupon de descuento (N-1)
-
-module.exports = Cart;
+  }
+  Cart.init({
+    total: DataTypes.DECIMAL,
+    userId: DataTypes.UUID
+  }, {
+    sequelize,
+    modelName: 'Cart',
+  });
+  return Cart;
+};

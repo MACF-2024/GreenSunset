@@ -1,30 +1,26 @@
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db-sequelize');
-
-const Crop = sequelize.define('crops', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    name: {
-        type: DataTypes.STRING,
-        validate: {
-            notEmpty: true,
-            isAlpha: true
-        }
-    },
-    productId: {
-        type: DataTypes.UUID
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Crop extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      
+      // producto - cultivo (N-1)
+      Crop.hasMany(models.Product, { foreignKey: 'cropId', as:'products'});
     }
-});
-
-// relaciones
-// producto (N-1)
-
-// relacion cultivo - producto (1-N)
-// Crop.hasMany(Product, { foreignKey: 'productId', as: 'product' });
-// Product.belongsTo(Crop, { foreignKey: 'cropId', as: 'crop' });
-
-module.exports = Crop;
+  }
+  Crop.init({
+    name: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Crop',
+  });
+  return Crop;
+};

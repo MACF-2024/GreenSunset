@@ -1,30 +1,24 @@
-const { DataTypes } = require('sequelize');
-const { v4:uuidv4 } = require('uuid');
-const sequelize= require('../db-sequelize');
-
-const Favorite = sequelize.define('favorites', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: uuidv4,
-        primaryKey: true
-    },
-    productId: {
-        type: DataTypes.UUID
-    },
-    userId: {
-        type: DataTypes.UUID
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Favorite extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
     }
-});
-
-// relaciones
-// usuario (1-N), productos (N-N)
-
-// relacion favoritos - usuario (N-1)
-// Favorites.hasMany(User, { foreignKey: 'favoriteId', as: 'favorite' });
-// User.belongsTo(Favorites, { foreignKey: 'userId', as: 'user' });
-
-// relacion favoritos - producto (N-N)
-// Favorite.belongsToMany(Product, { through: 'ProductFavorite', foreignKey: 'productId', as: 'product', otherKey: 'favoriteId' });
-// Product.belongsToMany(Favorite, { through: 'ProductFavorite', foreignKey: 'favoriteId', as: 'favorite', otherKey: 'productId' });
-
-module.exports = Favorite;
+  }
+  Favorite.init({
+    userId: DataTypes.UUID,
+    productId: DataTypes.UUID
+  }, {
+    sequelize,
+    modelName: 'Favorite',
+  });
+  return Favorite;
+};
