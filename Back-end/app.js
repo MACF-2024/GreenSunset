@@ -1,6 +1,7 @@
 const express = require('express');
 const routerUser = require('./routes/routerUser')
 const routerProduct = require('./routes/routerProduct')
+const routerMembership = require('./routes/routerMembership')
 const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -17,5 +18,6 @@ app.use(morgan('dev')); // Logs de solicitudes HTTP en desarrollo
 // Rutas
 app.use('/api/user', routerUser);
 app.use('/api/product', routerProduct);
+app.use('/api/membership', routerMembership);
 
 module.exports = app;
