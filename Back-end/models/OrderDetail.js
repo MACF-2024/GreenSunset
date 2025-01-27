@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   OrderDetail.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false
+    },
     quantity: DataTypes.INTEGER,
     price: DataTypes.DECIMAL,
     subtotal: DataTypes.DECIMAL,

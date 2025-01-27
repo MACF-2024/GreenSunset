@@ -17,6 +17,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   DiscountCoupon.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false
+    },
     discount: DataTypes.INTEGER,
     validation: DataTypes.BOOLEAN,
     productId: DataTypes.UUID,

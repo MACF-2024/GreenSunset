@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Residence.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false
+    },
     street: DataTypes.STRING,
     zipCode: DataTypes.INTEGER,
     types: DataTypes.ENUM('house', 'departament', 'other'),

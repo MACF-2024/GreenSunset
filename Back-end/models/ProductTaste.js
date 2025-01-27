@@ -14,6 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ProductTaste.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false
+    },
     tasteId: DataTypes.UUID,
     productId: DataTypes.UUID
   }, {

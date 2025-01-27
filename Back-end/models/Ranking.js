@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Ranking.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false
+    },
     ranking: DataTypes.ENUM('uno','dos','tres','cuatro','cinco','sin'),
     productId: DataTypes.UUID,
     userId: DataTypes.UUID
