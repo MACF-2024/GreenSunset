@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Order.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false
+    },
     total: DataTypes.DECIMAL,
     status: DataTypes.ENUM('pending','paid','shipped','completed','cancelled'),
     userId: DataTypes.UUID

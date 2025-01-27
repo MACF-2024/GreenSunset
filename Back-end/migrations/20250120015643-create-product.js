@@ -42,7 +42,6 @@ module.exports = {
       },
       cropId:{
         type: Sequelize.UUID,
-        allowNull: false,
         references: {
           model: 'Crops',
           key: 'id'
