@@ -5,6 +5,7 @@ const routerMembership = require('./routes/routerMembership')
 const routerTaste = require('./routes/routerTaste');
 const routerCrop = require('./routes/routerCrop');
 const routerVariety = require('./routes/routerVariety');
+const routerEffect = require('./routes/routerEffect');
 const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -25,5 +26,6 @@ app.use('/api/crop', routerCrop);
 app.use('/api/variety', routerVariety);
 app.use('/api/product', routerProduct);
 app.use('/api/membership', routerMembership);
+app.use('/api/effect', routerEffect);
 
 module.exports = app;
