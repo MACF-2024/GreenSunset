@@ -7,6 +7,7 @@ const routerCrop = require('./routes/routerCrop');
 const routerVariety = require('./routes/routerVariety');
 const routerEffect = require('./routes/routerEffect');
 const routerResidence = require('./routes/routerResidence');
+const routerCart = require('./routes/routerCart');
 const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -29,5 +30,6 @@ app.use('/api/product', routerProduct);
 app.use('/api/membership', routerMembership);
 app.use('/api/effect', routerEffect);
 app.use('/api/residence', routerResidence);
+app.use('/api/cart', routerCart);
 
 module.exports = app;
