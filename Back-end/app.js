@@ -11,6 +11,7 @@ const routerCart = require('./routes/routerCart');
 const routerComment = require('./routes/routerComment');
 const routerDiscountCoupon = require('./routes/routerDiscountCoupon');
 const routerItemCart = require('./routes/routerItemCart');
+const routerOrder = require('./routes/routerOrder');
 const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -37,5 +38,6 @@ app.use('/api/cart', routerCart);
 app.use('/api/comment', routerComment);
 app.use('/api/coupon', routerDiscountCoupon);
 app.use('/api/itemcart', routerItemCart);
+app.use('/api/order', routerOrder);
 
 module.exports = app;
