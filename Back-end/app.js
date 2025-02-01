@@ -9,6 +9,7 @@ const routerEffect = require('./routes/routerEffect');
 const routerResidence = require('./routes/routerResidence');
 const routerCart = require('./routes/routerCart');
 const routerComment = require('./routes/routerComment');
+const routerDiscountCoupon = require('./routes/routerDiscountCoupon');
 const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -33,5 +34,6 @@ app.use('/api/effect', routerEffect);
 app.use('/api/residence', routerResidence);
 app.use('/api/cart', routerCart);
 app.use('/api/comment', routerComment);
+app.use('/api/coupon', routerDiscountCoupon);
 
 module.exports = app;
