@@ -5,6 +5,8 @@ const {
     varietyById,
     varietyUpdate,
     varietyDelete,
+    addVarietyToProduct,
+    removeVarietyFromProduct,
 } = require('../controllers/varietyControllers');
 
 
@@ -12,6 +14,8 @@ const {
 const router = express.Router();
 
 router.post('/create', varietyCreate);
+router.post('/:id/product/:productId', addVarietyToProduct);
+router.delete('/:id/product/:productId', removeVarietyFromProduct);
 router.get('/all', varietyAll);
 router.get('/:id', varietyById);
 router.put('/update/:id', varietyUpdate);
