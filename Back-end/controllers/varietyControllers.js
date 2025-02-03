@@ -1,4 +1,4 @@
-const { Variety } = require('../models');
+const { Variety, Product } = require('../models');
 
 const varietyCreate = async (req, res) => {
     const { name } = req.body;
@@ -73,10 +73,44 @@ const varietyDelete = async (req, res) => {
     }
 };
 
+const addVarietyToProduct = async (req, res) => {
+    const { id, productId } = req.params;
+    try {
+        const variety = await Variety.findByPk(id);
+        const product = await Product.findByPk(productId);
+
+        if(!variety || !product) res.status(404).json({ message: 'No se encontraron lo elementos solicitados' });
+
+        await product.addVariety(variety);
+
+        res.status(200).json({ message: 'Agreagdo Variedad a Product correctamente' });
+    } catch (error) {
+        return res.status(500).json({ error: 'Error al agregar tabla intermedia', details: error.message });
+    }
+};
+
+const removeVarietyFromProduct = async (req, res) => {
+    const { id, productId } = req.params;
+    try {
+        const variety = await Variety.findByPk(id);
+        const product = await Product.findByPk(productId);
+
+        if(!variety || !product) res.status(404).json({ message: 'No se encontraron lo elementos solicitados' });
+
+        await product.removeVariety(variety);
+
+        res.status(200).json({ message: 'Se elimino Variedad del Producto correctamente' });
+    } catch (error) {
+        return res.status(500).json({ error: 'Error al agregar tabla intermedia', details: error.message });
+    }
+};
+
 module.exports = {
     varietyCreate,
     varietyAll,
     varietyById,
     varietyUpdate,
-    varietyDelete
+    varietyDelete,
+    addVarietyToProduct,
+    removeVarietyFromProduct
 };

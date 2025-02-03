@@ -1,4 +1,4 @@
-const { Product } = require('../models');
+const { Product, Variety } = require('../models');
 
 const productCreate = async (req, res) => {
     const { name, image, price, description } = req.body
@@ -10,32 +10,46 @@ const productCreate = async (req, res) => {
             description
         });
 
-        return res.status(200).json(product);
+        res.status(200).json(product);
     } catch (error) {
-        return res.status(500).json({ error: 'Error al crear el producto', details: error.message });
+        res.status(500).json({ error: 'Error al crear el producto', details: error.message });
     }
 };
 
 const productAll = async (req, res) => {
     try {
-        const products = await Product.findAll();
+        const products = await Product.findAll({
+            include:[{
+                model: Variety,
+                as: 'varieties',
+                attributes: ['id','name'],
+                through: { attributes: [] }
+            }]
+        });
         
-        if(products) return res.status(200).json(products)
-        else return res.status(404).json({ message: 'Productos no encontrados' })
+        if(products) res.status(200).json(products)
+        else res.status(404).json({ message: 'Productos no encontrados' })
     } catch (error) {
-        return res.status(500).json({ error: 'Error al obtener los producto', details: error.message });
+        res.status(500).json({ error: 'Error al obtener los producto', details: error.message });
     }
 };
 
 const productById = async (req, res) => {
     const { id } = req.params
     try {
-        const product = await Product.findByPk(id);
-
-        if (product) return res.status(200).json(product)
-        else return res.status(404).json({ message:'Producto no encontrado' });
+        const product = await Product.findByPk(id,{
+            include:[{
+                model: Variety,
+                as: 'varieties',
+                attributes: ['id','name'],
+                through: { attributes: [] }
+            }]
+        });
+        
+        if (product) res.status(200).json(product)
+        else res.status(404).json({ message:'Producto no encontrado' });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al obtener el producto', details: error.message });
+        res.status(500).json({ error: 'Error al obtener el producto', details: error.message });
     }
 };
 
@@ -51,15 +65,22 @@ const productUpdate = async (req, res) => {
             stock, 
             discount
         }, { where: { id } });
-
+        
         if (updated) {
-            const productUpdated = await Product.findByPk(id);
+            const productUpdated = await Product.findByPk(id,{
+                include:[{
+                    model: Variety,
+                    as: 'varieties',
+                    attributes: ['id','name'],
+                    through: { attributes: [] }
+                }]
+            });
             return res.status(200).json(productUpdated);
         } else {
             return res.status(404).json({ message:'Producto no actualizado' });
         };
     } catch (error) {
-        return res.status(500).json({ error: 'Error al actualizar el producto', details: error.message });
+        res.status(500).json({ error: 'Error al actualizar el producto', details: error.message });
     }
 };
 
@@ -71,13 +92,13 @@ const productDelete = async (req, res) => {
 
         if (updated) {
             const productDeleted = await Product.findByPk(id);
-            if (validation) return res.status(200).json({ message:`Producto ${productDeleted.name} activo` }) 
-            else return res.status(200).json({ message:`Producto ${productDeleted.name} dado de baja` })
+            if (validation) res.status(200).json({ message:`Producto ${productDeleted.name} activo` }) 
+            else res.status(200).json({ message:`Producto ${productDeleted.name} dado de baja` })
         } else {
-            return res.status(404).json({ error: 'Producto no encontrado' });
+            res.status(404).json({ error: 'Producto no encontrado' });
         }
     } catch (error) {
-        return res.status(500).json({ error: 'Error al actualizar el producto', details: error.message });
+        res.status(500).json({ error: 'Error al actualizar el producto', details: error.message });
     }
 };
 
