@@ -24,6 +24,11 @@ const itemCartAll = async (req, res) => {
                 model: Cart,
                 as: 'cart',
                 attributes: ['id']
+            },{
+                model: Product,
+                as: 'products',
+                attributes: ['id','name'],
+                through: { attributes: [] }
             }]
         });
         
@@ -43,6 +48,11 @@ const itemCartById = async (req, res) => {
                 model: Cart,
                 as: 'cart',
                 attributes: ['id']
+            },{
+                model: Product,
+                as: 'products',
+                attributes: ['id','name'],
+                through: { attributes: [] }
             }]
         });
 
@@ -68,6 +78,11 @@ const itemCartUpdate = async (req, res) => {
                     model: Cart,
                     as: 'cart',
                     attributes: ['id']
+                },{
+                    model: Product,
+                    as: 'products',
+                    attributes: ['id','name'],
+                    through: { attributes: [] }
                 }]
             });
             return res.status(200).json(itemCart);
@@ -85,9 +100,9 @@ const itemCartDelete = async (req, res) => {
         const itemCart = await ItemCart.findByPk(id);
 
         if(itemCart) {
-            // const itemCartN = itemCart.product.name
+            const itemCartN = itemCart.products.name
             await itemCart.destroy();
-            return res.status(200).json({ message:`Se elimino el Item del Carrito de la base de datos` });
+            return res.status(200).json({ message:`Se elimino el Producto ${itemCartN} de Item del Carrito de la base de datos` });
         } else {
             return res.status(404).json({ message:'No se encontro el Item del Carrito' });
         }
@@ -96,10 +111,44 @@ const itemCartDelete = async (req, res) => {
     }
 };
 
+const addItemCartToProduct = async (req, res) => {
+    const { id, productId } = req.params;
+    try {
+        const itemCart = await ItemCart.findByPk(id);
+        const product = await Product.findByPk(productId);
+
+        if(!itemCart || !product) res.status(404).json({ message: 'No se encontraron lo elementos solicitados' });
+
+        await itemCart.addProduct(product);
+
+        res.status(200).json({ message: 'Agregado Producto al Item del Carrito correctamente' });
+    } catch (error) {
+        return res.status(500).json({ error: 'Error al agregar tabla intermedia', details: error.message });
+    }
+};
+
+const removeItemCartFromProduct = async (req, res) => {
+    const { id, productId } = req.params;
+    try {
+        const itemCart = await ItemCart.findByPk(id);
+        const product = await Product.findByPk(productId);
+
+        if(!itemCart || !product) res.status(404).json({ message: 'No se encontraron lo elementos solicitados' });
+
+        await itemCart.removeProduct(product);
+
+        res.status(200).json({ message: 'Se elimino Producto del Item del Carrito correctamente' });
+    } catch (error) {
+        return res.status(500).json({ error: 'Error al agregar tabla intermedia', details: error.message });
+    }
+};
+
 module.exports = {
     itemCartCreate,
     itemCartAll,
     itemCartById,
     itemCartUpdate,
-    itemCartDelete
+    itemCartDelete,
+    addItemCartToProduct,
+    removeItemCartFromProduct
 };
