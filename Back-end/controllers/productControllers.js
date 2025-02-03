@@ -1,4 +1,4 @@
-const { Product, Variety } = require('../models');
+const { Product, Variety, Taste } = require('../models');
 
 const productCreate = async (req, res) => {
     const { name, image, price, description } = req.body
@@ -24,6 +24,11 @@ const productAll = async (req, res) => {
                 as: 'varieties',
                 attributes: ['id','name'],
                 through: { attributes: [] }
+            },{
+                model: Taste,
+                as: 'taste',
+                attributes: ['id','name'],
+                through: { attributes: [] }
             }]
         });
         
@@ -41,6 +46,11 @@ const productById = async (req, res) => {
             include:[{
                 model: Variety,
                 as: 'varieties',
+                attributes: ['id','name'],
+                through: { attributes: [] }
+            },{
+                model: Taste,
+                as: 'taste',
                 attributes: ['id','name'],
                 through: { attributes: [] }
             }]
@@ -71,6 +81,11 @@ const productUpdate = async (req, res) => {
                 include:[{
                     model: Variety,
                     as: 'varieties',
+                    attributes: ['id','name'],
+                    through: { attributes: [] }
+                },{
+                    model: Taste,
+                    as: 'taste',
                     attributes: ['id','name'],
                     through: { attributes: [] }
                 }]

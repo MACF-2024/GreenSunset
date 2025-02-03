@@ -1,4 +1,4 @@
-const { Taste } = require('../models');
+const { Taste, Product } = require('../models');
 
 const tasteCreate = async (req, res) => {
     const { name } = req.body
@@ -70,10 +70,44 @@ const tasteDelete = async (req, res) => {
     }
 };
 
+const addTasteToProduct = async (req, res) => {
+    const { id, productId } = req.params;
+    try {
+        const taste = await Taste.findByPk(id);
+        const product = await Product.findByPk(productId);
+
+        if(!taste || !product) res.status(404).json({ message: 'No se encontraron lo elementos solicitados' });
+
+        await product.addTaste(taste);
+
+        res.status(200).json({ message: 'Agregado Sabor a Product correctamente' });
+    } catch (error) {
+        return res.status(500).json({ error: 'Error al agregar tabla intermedia', details: error.message });
+    }
+};
+
+const removeTasteFromProduct = async (req, res) => {
+    const { id, productId } = req.params;
+    try {
+        const taste = await Taste.findByPk(id);
+        const product = await Product.findByPk(productId);
+
+        if(!taste || !product) res.status(404).json({ message: 'No se encontraron lo elementos solicitados' });
+
+        await product.removeTaste(taste);
+
+        res.status(200).json({ message: 'Se elimino Sabor del Producto correctamente' });
+    } catch (error) {
+        return res.status(500).json({ error: 'Error al agregar tabla intermedia', details: error.message });
+    }
+};
+
 module.exports = {
     tasteCreate,
     tasteAll,
     tasteById,
     tasteUpdate,
-    tasteDelete
+    tasteDelete,
+    addTasteToProduct,
+    removeTasteFromProduct
 }
