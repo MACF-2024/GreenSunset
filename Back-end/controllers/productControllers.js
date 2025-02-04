@@ -1,4 +1,4 @@
-const { Product, Variety, Taste, Effect } = require('../models');
+const { Product, Variety, Taste, Effect, Crop, Comment, Ranking } = require('../models');
 
 const productCreate = async (req, res) => {
     const { name, image, price, description } = req.body
@@ -19,6 +19,7 @@ const productCreate = async (req, res) => {
 const productAll = async (req, res) => {
     try {
         const products = await Product.findAll({
+            attributes: { exclude:['cropId'] },
             include:[{
                 model: Variety,
                 as: 'varieties',
@@ -34,6 +35,16 @@ const productAll = async (req, res) => {
                 as: 'effect',
                 attributes: ['id','name'],
                 through: { attributes: [] }
+            },{
+                model: Crop,
+                as: 'crop',
+                attributes: ['id','name']
+            },{
+                model: Ranking,
+                as: 'ranking'
+            },{
+                model: Comment,
+                as: 'comment'
             }]
         });
         
@@ -48,6 +59,7 @@ const productById = async (req, res) => {
     const { id } = req.params
     try {
         const product = await Product.findByPk(id,{
+            attributes: { exclude: ['cropId'] },
             include:[{
                 model: Variety,
                 as: 'varieties',
@@ -63,6 +75,16 @@ const productById = async (req, res) => {
                 as: 'effect',
                 attributes: ['id','name'],
                 through: { attributes: [] }
+            },{
+                model: Crop,
+                as: 'crop',
+                attributes: ['id','name']
+            },{
+                model: Ranking,
+                as: 'ranking'
+            },{
+                model: Comment,
+                as: 'comment'
             }]
         });
         
@@ -75,7 +97,7 @@ const productById = async (req, res) => {
 
 const productUpdate = async (req, res) => {
     const { id } = req.params;
-    const { name, image, price, description, stock, discount } = req.body;
+    const { name, image, price, cropId, description, stock, discount } = req.body;
     try {
         const [updated] = await Product.update({
             name, 
@@ -83,28 +105,12 @@ const productUpdate = async (req, res) => {
             price, 
             description, 
             stock, 
-            discount
+            discount,
+            cropId
         }, { where: { id } });
         
         if (updated) {
-            const productUpdated = await Product.findByPk(id,{
-                include:[{
-                    model: Variety,
-                    as: 'varieties',
-                    attributes: ['id','name'],
-                    through: { attributes: [] }
-                },{
-                    model: Taste,
-                    as: 'taste',
-                    attributes: ['id','name'],
-                    through: { attributes: [] }
-                },{
-                    model: Effect,
-                    as: 'effect',
-                    attributes: ['id','name'],
-                    through: { attributes: [] }
-                }]
-            });
+            const productUpdated = await Product.findByPk(id);
             return res.status(200).json(productUpdated);
         } else {
             return res.status(404).json({ message:'Producto no actualizado' });

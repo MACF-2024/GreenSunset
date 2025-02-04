@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       DiscountCoupon.belongsTo(models.Product, { foreignKey: 'productId', as:'product' });
       DiscountCoupon.belongsTo(models.Cart, { foreignKey: 'cartId', as:'cart' });
-      DiscountCoupon.belongsTo(models.Membership, { foreignKey: 'membershipId', as:'membreship' });
+      DiscountCoupon.belongsTo(models.Membership, { foreignKey: 'membershipId', as:'membership' });
     }
   }
   DiscountCoupon.init({

@@ -71,18 +71,7 @@ const commentUpdate = async (req, res) => {
         },{ where:{ id } });
         
         if(updated) {
-            const comment = await Comment.findByPk(id, {
-                attributes: { exclude: ['userId','productId'] },
-                include: [{
-                    model: User,
-                    as: 'users',
-                    attributes: ['id', 'username']
-                },{
-                    model: Product,
-                    as: 'products',
-                    attributes: ['id', 'name']
-                }]
-            });
+            const comment = await Comment.findByPk(id);
             return res.status(200).json(comment);
         } else {
             return res.status(404).json({ message:'No se actualizo el Comentario' });

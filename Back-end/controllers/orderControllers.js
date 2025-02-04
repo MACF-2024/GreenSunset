@@ -1,4 +1,4 @@
-const { Order, User } = require('../models');
+const { Order, User, OrderDetail, Product } = require('../models');
 
 const orderCreate = async (req, res) => {
     const { userId } = req.params;
@@ -24,6 +24,16 @@ const orderAll = async (req, res) => {
                 model: User,
                 as: 'user',
                 attributes: ['id', 'username']
+            },{
+                model: OrderDetail,
+                as: 'orderDetail',
+                attributes: ['id','price','subtotal','quantity'],
+                include: {
+                    model: Product,
+                    as: 'products',
+                    attributes: ['id','price','name'],
+                    through: { attributes: [] }
+                }
             }]
         });
         
@@ -43,6 +53,16 @@ const orderById = async (req, res) => {
                 model: User,
                 as: 'user',
                 attributes: ['id', 'username']
+            },{
+                model: OrderDetail,
+                as: 'orderDetail',
+                attributes: ['id','price','subtotal','quantity'],
+                include: {
+                    model: Product,
+                    as: 'products',
+                    attributes: ['id','price','name'],
+                    through: { attributes: [] }
+                }
             }]
         });
 
@@ -63,14 +83,7 @@ const orderUpdate = async (req, res) => {
         },{ where:{ id } });
         
         if(updated) {
-            const order = await Order.findByPk(id, {
-                attributes: { exclude: ['userId'] },
-                include: [{
-                    model: User,
-                    as: 'user',
-                    attributes: ['id', 'username']
-                }]
-            });
+            const order = await Order.findByPk(id);
             return res.status(200).json(order);
         } else {
             return res.status(404).json({ message:'No se actualizo la Orden' });
@@ -83,13 +96,7 @@ const orderUpdate = async (req, res) => {
 const orderDelete = async (req, res) => {
     const { id } = req.params;
     try {
-        const order = await Order.findByPk(id, {
-            include: {
-                model: User,
-                as:'user',
-                attributes: ['username']
-            }
-        });
+        const order = await Order.findByPk(id);
 
         if(order) {
             const orderUserN = order.user.username

@@ -72,19 +72,7 @@ const rankingUpdate = async (req, res) => {
         }, { where: { id } });
 
         if (updated) {
-            const ranking = await Ranking.findByPk(id, {
-                attributes: { exclude: ['userId', 'productId'] },
-                include: [{
-                    model: User,
-                    as: 'users',
-                    attributes: ['id', 'username', 'email']
-
-                },{
-                    model: Product,
-                    as: 'products',
-                    attributes: ['id', 'name']
-                }]
-            });
+            const ranking = await Ranking.findByPk(id);
             return res.status(200).json(ranking);
         } else {
             return res.status(404).json({ message: 'No se actualizo el Ranking' });
