@@ -1,4 +1,4 @@
-const { OrderDetail, User, Order } = require('../models');
+const { OrderDetail, Product } = require('../models')
 
 const orderDetailCreate = async (req, res) => {
     const { orderId } = req.params;
@@ -21,17 +21,12 @@ const orderDetailCreate = async (req, res) => {
 const orderDetailAll = async (req, res) => {
     try {
         const orderDetails = await OrderDetail.findAll({
-            attributes: { exclude: ['orderId'] },
-            include: [{
-                model: Order,
-                as: 'order',
-                attributes: ['id', 'total'],
-                include: [{
-                    model: User,
-                    as: 'user',
-                    attributes: ['id','username','email']
-                }]
-            }]
+            include: {
+                model: Product,
+                as: 'products',
+                attributes: ['id','name','price','discount'],
+                through:{ attributes:[] }
+            }
         });
         
         if(orderDetails.length > 0) res.status(200).json(orderDetails)
@@ -45,17 +40,12 @@ const orderDetailById = async (req, res) => {
     const { id } = req.params;
     try {
         const orderDetail = await OrderDetail.findByPk(id, {
-            attributes: { exclude: ['orderId'] },
-            include: [{
-                model: Order,
-                as: 'order',
-                attributes: ['id', 'total'],
-                include: [{
-                    model: User,
-                    as: 'user',
-                    attributes: ['id','username','email']
-                }]
-            }]
+            include: {
+                model: Product,
+                as: 'products',
+                attributes: ['id','name','price','discount'],
+                through:{ attributes:[] }
+            }
         });
 
         if (orderDetail) res.status(200).json(orderDetail)
@@ -76,19 +66,7 @@ const orderDetailUpdate = async (req, res) => {
         },{ where:{ id } });
         
         if(updated) {
-            const orderDetail = await OrderDetail.findByPk(id, {
-                attributes: { exclude: ['orderId'] },
-                include: [{
-                    model: Order,
-                    as: 'order',
-                    attributes: ['id', 'total'],
-                    include: [{
-                        model: User,
-                        as: 'user',
-                        attributes: ['id','username','email']
-                    }]
-                }]
-            });
+            const orderDetail = await OrderDetail.findByPk(id);
             return res.status(200).json(orderDetail);
         } else {
             return res.status(404).json({ message:'No se actualizo el Detalle de la Orden' });
@@ -101,18 +79,7 @@ const orderDetailUpdate = async (req, res) => {
 const orderDetailDelete = async (req, res) => {
     const { id } = req.params;
     try {
-        const orderDetail = await OrderDetail.findByPk(id, {
-            include: [{
-                model: Order,
-                as: 'order',
-                attributes: ['id'],
-                include: [{
-                    model: User,
-                    as: 'user',
-                    attributes: ['id','username']
-                }]
-            }]
-        });
+        const orderDetail = await OrderDetail.findByPk(id);
 
         if(orderDetail) {
             const username = orderDetail.order.user.username
@@ -126,10 +93,44 @@ const orderDetailDelete = async (req, res) => {
     }
 };
 
+const addProductToOrderDetail = async (req, res) => {
+    const { id, productId } = req.params;
+    try {
+        const orderDetail = await OrderDetail.findByPk(id);
+        const product = await Product.findByPk(productId);
+
+        if(!orderDetail || !product) res.status(404).json({ message:'Error al obtener los datos solicitados' });
+
+        await orderDetail.addProduct(product.id ,{ through:{ orderDetailId:id }});
+
+        res.status(201).json({ message:'Agregado Producto en Detalle de la Orden' });
+    } catch (error) {
+        res.status(500).json({ error:'Error al agregar tabla intermedia', detail: error.message });
+    }
+};
+
+const removeProductFromOrderDetail = async (req, res) => {
+    const { id, productId } = req.params;
+    try {
+        const orderDetail = await OrderDetail.findByPk(id);
+        const product = await Product.findByPk(productId);
+        
+        if(!orderDetail || !product) res.status(404).json({ message:'Error al obtener los datos solicitados' });
+        
+        await orderDetail.removeProduct(product.id);
+        
+        res.status(201).json({ message:'Eliminado Producto en Detalle de la Orden' });
+    } catch (error) {
+        res.status(500).json({ error:'Error al agregar tabla intermedia', detail: error.message });
+    }
+};
+
 module.exports = {
     orderDetailCreate,
     orderDetailAll,
     orderDetailById,
     orderDetailUpdate,
-    orderDetailDelete
+    orderDetailDelete,
+    addProductToOrderDetail,
+    removeProductFromOrderDetail
 };

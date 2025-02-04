@@ -1,4 +1,4 @@
-const { Membership, User } = require('../models');
+const { Membership, User, DiscountCoupon } = require('../models');
 
 const membershipCreate = async (req,res) => {
     const { name, price, description, userId } = req.body;
@@ -19,11 +19,15 @@ const membershipCreate = async (req,res) => {
 const membershipAll = async (req,res) => {
     try {
         const memberships = await Membership.findAll({
-            include: {
+            include: [{
                 model: User,
                 as: 'user',
                 attributes: ['id','username']
-            }
+            },{
+                model: DiscountCoupon,
+                as: 'discountCoupon',
+                attributes: ['id','discount']
+            }]
         });
 
         if (memberships) return res.status(200).json(memberships)
@@ -37,11 +41,15 @@ const membershipById = async (req,res) => {
     const { id } = req.params;
     try {
         const membreship = await Membership.findByPk(id, {
-            include: {
+            include: [{
                 model: User,
                 as: 'user',
                 attributes: ['id', 'username']
-            }
+            },{
+                model: DiscountCoupon,
+                as: 'discountCoupon',
+                attributes: ['id','discount']
+            }]
         });
 
         if (membreship) return res.status(200).json(membreship)

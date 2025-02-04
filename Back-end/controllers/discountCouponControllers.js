@@ -31,7 +31,7 @@ const discountCouponAll = async (req, res) => {
                 attributes: ['id','name']
             },{
                 model: Membership,
-                as: 'membreship',
+                as: 'membership',
                 attributes: ['id','name']
             }]
         });
@@ -58,7 +58,7 @@ const discountCouponById = async (req, res) => {
                 attributes: ['id','name']
             },{
                 model: Membership,
-                as: 'membreship',
+                as: 'membership',
                 attributes: ['id','name']
             }]
         });
@@ -94,7 +94,7 @@ const discountCouponUpdate = async (req, res) => {
                     attributes: ['id', 'name']
                 },{
                     model: Membership,
-                    as: 'membreship',
+                    as: 'membership',
                     attributes: ['id', 'name']
                 }]
             });

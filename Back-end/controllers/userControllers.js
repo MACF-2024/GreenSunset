@@ -1,4 +1,4 @@
-const { User, Product, Residence } = require('../models');
+const { User, Order, Product, Residence, Membership, Comment, Ranking } = require('../models');
 const bcrypt = require('bcrypt');
 
 const userCreate = async (req, res) => {
@@ -59,16 +59,29 @@ const userUpdatePassword = async (req, res) => {
 const userAll = async (req, res) => {
     try {
         const users = await User.findAll({
-            attributes: { exclude: ['residenceId']},
-            include: [{
-                model: Product,
-                as: 'favorites',
-                attributes: ['id', 'name'],
-                through: { attributes: [] }
-            },{
-                model: Residence,
-                as: 'residence'
-            }]
+            attributes: { exclude: ['residenceId'] },
+            include: [
+                // model: Product,
+                // as: 'favorites',
+                // attributes: ['id', 'name'],
+                // through: { attributes: [] }
+                {
+                    model: Residence,
+                    as: 'residence'
+                }, {
+                    model: Membership,
+                    as: 'membership',
+                    attributes: ['id', 'name', 'price']
+                    // },{
+                    //     model: Ranking,
+                    //     as: 'ranking'
+                    // },{
+                    //     model: Comment,
+                    //     as: 'comment'
+                    // },{
+                    //     model: Order,
+                    //     as: 'order'
+                }]
         });
 
         return res.status(200).json(users);
@@ -81,15 +94,14 @@ const userById = async (req, res) => {
     const { id } = req.params;
     try {
         const user = await User.findByPk(id, {
-            attributes: { exclude: ['residenceId']},
+            attributes: { exclude: ['residenceId'] },
             include: [{
-                model: Product,
-                as: 'favorites',
-                attributes: ['id', 'name'],
-                through: { attributes: [] }
-            },{
                 model: Residence,
                 as: 'residence'
+            }, {
+                model: Membership,
+                as: 'membership',
+                attributes: ['id', 'name', 'price']
             }]
         });
 

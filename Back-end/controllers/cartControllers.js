@@ -1,4 +1,4 @@
-const { Cart, User } = require('../models');
+const { Cart, User, ItemCart, Product } = require('../models');
 
 const cartCreate = async (req, res) => {
     const { userId } = req.params;
@@ -20,11 +20,21 @@ const cartAll = async (req, res) => {
     try {
         const carts = await Cart.findAll({
             attributes: { exclude: ['userId'] },
-            include: {
+            include: [{
                 model: User,
                 as: 'user',
                 attributes: ['id','username']
-            }
+            },{
+                model: ItemCart,
+                as: 'items',
+                attributes: ['id','quantity'],
+                include: {
+                    model: Product,
+                    as: 'products',
+                    attributes: ['name','price','discount'],
+                    through: { attributes: [] }
+                }
+            }]
         });
         
         if(carts.length > 0) res.status(200).json(carts)
@@ -39,11 +49,21 @@ const cartById = async (req, res) => {
     try {
         const cart = await Cart.findByPk(id, {
             attributes: { exclude: ['userId'] },
-            include: {
+            include: [{
                 model: User,
                 as: 'user',
                 attributes: ['id','username']
-            }
+            },{
+                model: ItemCart,
+                as: 'items',
+                attributes: ['id','quantity'],
+                include: {
+                    model: Product,
+                    as: 'products',
+                    attributes: ['name','price','discount'],
+                    through: { attributes: [] }
+                }
+            }]
         });
 
         if (cart) res.status(200).json(cart)
@@ -62,14 +82,7 @@ const cartUpdate = async (req, res) => {
         },{ where:{ id } });
         
         if(updated) {
-            const cart = await Cart.findByPk(id, {
-                attributes: { exclude: ['userId'] },
-                include: {
-                    model: User,
-                    as: 'user',
-                    attributes: ['id', 'username']
-                }
-            });
+            const cart = await Cart.findByPk(id);
             return res.status(200).json(cart);
         } else {
             return res.status(404).json({ message:'No se actualizo el Carrito' });
