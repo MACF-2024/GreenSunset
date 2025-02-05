@@ -1,102 +1,97 @@
 const { Membership, User, DiscountCoupon } = require('../models');
 
-const membershipCreate = async (req,res) => {
+const membershipCreate = async (req, res) => {
     const { name, price, description, userId } = req.body;
     try {
-        const membership = await Membership.create({ 
+        const membership = await Membership.create({
             name,
             price,
             description,
             userId
         });
 
-        return res.status(200).json(membership);
+        if (!membership) res.status(404).json({ error: 'La membresia no fue creada' });
+
+        res.status(200).json({ message: 'La membresia fue creada correctamente', post: membership });
     } catch (error) {
-        return res.status(500).json({ error:'Error al crear la membresia', details: error.message });
+        res.status(500).json({ error: 'Error al crear la membresia', details: error.message });
     }
 };
 
-const membershipAll = async (req,res) => {
+const membershipAll = async (req, res) => {
     try {
         const memberships = await Membership.findAll({
-            include: [{
-                model: User,
-                as: 'user',
-                attributes: ['id','username']
-            },{
+            include: {
                 model: DiscountCoupon,
                 as: 'discountCoupon',
-                attributes: ['id','discount']
-            }]
+                attributes: ['id', 'discount']
+            }
         });
 
-        if (memberships) return res.status(200).json(memberships)
-        else return res.status(404).json({ message: 'Error al mostrar las membresias' })
+        if (!memberships) res.status(404).json({ error: 'Error al mostrar las membresias' });
+
+        res.status(200).json({ message: 'Todas las membresias creadas', get: memberships})
     } catch (error) {
-        return res.status(500).json({ error:'Error al obtener las membresia', details: error.message });
+        res.status(500).json({ error: 'Error al obtener las membresia', details: error.message });
     }
 };
 
-const membershipById = async (req,res) => {
+const membershipById = async (req, res) => {
     const { id } = req.params;
     try {
-        const membreship = await Membership.findByPk(id, {
-            include: [{
-                model: User,
-                as: 'user',
-                attributes: ['id', 'username']
-            },{
+        const membership = await Membership.findByPk(id, {
+            include: {
                 model: DiscountCoupon,
                 as: 'discountCoupon',
-                attributes: ['id','discount']
-            }]
+                attributes: ['id', 'discount']
+            }
         });
 
-        if (membreship) return res.status(200).json(membreship)
-        else return res.status(404).json({ message:'Error al encontrar la membresia' })
+        if (!membership) res.status(404).json({ error: 'Error al encontrar la membresia' });
+
+        res.status(200).json({ message: 'Se obtuvo la membresia', get: membership });
     } catch (error) {
-        return res.status(500).json({ error:'Error al obtener la membresia', details: error.message });
+        res.status(500).json({ error: 'Error al obtener la membresia', details: error.message });
     }
 };
 
-const membershipUpdate = async (req,res) => {
+const membershipUpdate = async (req, res) => {
     const { id } = req.params;
     const { name, price, discount, image, description } = req.body;
     try {
         const [updated] = await Membership.update({
             name,
-            price, 
-            discount, 
-            image, 
+            price,
+            discount,
+            image,
             description
         }, { where: { id } });
+
+        if (!updated) res.status(404).json({ error: 'No se actualizo la membrecia' });
+
+        const updatedId = await Membership.findByPk(id)
         
-        if(updated) {
-            const updatedId = await Membership.findByPk(id)
-            return res.status(200).json(updatedId)
-        } else {
-            return res.status(404).json({ message: 'No se actualizo la membrecia' })
-        }
+        res.status(200).json({ message: 'Se actualizo correctamente', put: updatedId })
     } catch (error) {
-        return res.status(500).json({ error:'Error al actualizar la membresia', details: error.message });
+        res.status(500).json({ error: 'Error al actualizar la membresia', details: error.message });
     }
 };
 
-const membershipDelete = async (req,res) => {
+const membershipDelete = async (req, res) => {
     const { id } = req.params;
     const { validation } = req.body;
     try {
-        const [updated] = await Membership.update({ validation },{ where: { id } });
+        const [updated] = await Membership.update({ validation }, { where: { id } });
 
-        if (updated) {
-            const membreship = await Membership.findByPk(id);
-            if (validation) return res.status(200).json({ message:`Membresia ${membreship.name} activa` }) 
-            else return res.status(200).json({ message:`Membresia ${membreship.name} dada de baja` })
-        } else {
-            return res.status(404).json({ error: 'Membresia no encontrada' });
-        }
+        if (!updated) res.status(404).json({ error: 'Membresia no encontrada' });
+
+        const membership = await Membership.findByPk(id);
+        
+        if (membership.validation === false) res.status(200).json({ message: `Membresia ${membership.name} dada de baja` });
+
+        res.status(200).json({ message: `Membresia ${membership.name} activada` });
     } catch (error) {
-        return res.status(500).json({ error:'Error al crear la membresia', details: error.message });
+        res.status(500).json({ error: 'Error al crear la membresia', details: error.message });
     }
 };
 

@@ -11,10 +11,11 @@ const orderDetailCreate = async (req, res) => {
             orderId
         });
 
-        if (orderDetail) res.status(201).json(orderDetail)
-        else res.status(404).json({ message: 'No se creo el Detalle de la Orden' })
+        if (!orderDetail) res.status(404).json({ error: 'No se creo el Detalle de la Orden' });
+
+        res.status(201).json({ message: 'Se creo correctamente el detalle de la orden', post: orderDetail });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al crear OrderDetail', details: error.message });
+        res.status(500).json({ error: 'Error al crear OrderDetail', details: error.message });
     }
 };
 
@@ -29,10 +30,11 @@ const orderDetailAll = async (req, res) => {
             }
         });
         
-        if(orderDetails.length > 0) res.status(200).json(orderDetails)
-        else res.status(404).json({ message:'No se encontraron Detalles de Ordenes creadas' })
+        if(orderDetails.length <= 0) res.status(404).json({ error:'No se encontraron Detalles de Ordenes creadas' });
+
+        res.status(200).json({ message: 'Todos los detalles de orden', get: orderDetails });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al obtener OrderDetail', details: error.message });
+        res.status(500).json({ error: 'Error al obtener OrderDetail', details: error.message });
     }
 };
 
@@ -48,10 +50,11 @@ const orderDetailById = async (req, res) => {
             }
         });
 
-        if (orderDetail) res.status(200).json(orderDetail)
-        else res.status(404).json({ message: 'No se encontro el Detalle de la Orden' })
+        if (!orderDetail) res.status(404).json({ error: 'No se encontro el Detalle de la Orden' });
+
+        res.status(200).json({ message: 'Se obtuvo el detalle de la orden', get: orderDetail });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al obtener OrderDetail', details: error.message });
+        res.status(500).json({ error: 'Error al obtener OrderDetail', details: error.message });
     }
 };
 
@@ -65,14 +68,13 @@ const orderDetailUpdate = async (req, res) => {
             quantity
         },{ where:{ id } });
         
-        if(updated) {
-            const orderDetail = await OrderDetail.findByPk(id);
-            return res.status(200).json(orderDetail);
-        } else {
-            return res.status(404).json({ message:'No se actualizo el Detalle de la Orden' });
-        }
+        if(!updated) res.status(404).json({ error:'No se actualizo el Detalle de la Orden' });
+        
+        const orderDetail = await OrderDetail.findByPk(id);
+        
+        res.status(200).json({ message: 'Se actualizo correctamente', put: orderDetail });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al actualizar OrderDetail', details: error.message });
+        res.status(500).json({ error: 'Error al actualizar OrderDetail', details: error.message });
     }
 };
 
@@ -81,15 +83,15 @@ const orderDetailDelete = async (req, res) => {
     try {
         const orderDetail = await OrderDetail.findByPk(id);
 
-        if(orderDetail) {
-            const username = orderDetail.order.user.username
-            await orderDetail.destroy();
-            return res.status(200).json({ message:`Se elimino el Detalle de la Orden de ${username} de la base de datos` });
-        } else {
-            return res.status(404).json({ message:'No se encontro el Detalle de la Orden' });
-        }
+        if(!orderDetail) res.status(404).json({ error:'No se encontro el Detalle de la Orden' });
+        
+        const username = orderDetail.order.user.username
+        
+        await orderDetail.destroy();
+        
+        res.status(200).json({ message:`Se elimino el Detalle de la Orden de ${username} de la base de datos` });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al eliminar OrderDetail', details: error.message });
+        res.status(500).json({ error: 'Error al eliminar OrderDetail', details: error.message });
     }
 };
 
@@ -99,7 +101,7 @@ const addProductToOrderDetail = async (req, res) => {
         const orderDetail = await OrderDetail.findByPk(id);
         const product = await Product.findByPk(productId);
 
-        if(!orderDetail || !product) res.status(404).json({ message:'Error al obtener los datos solicitados' });
+        if(!orderDetail || !product) res.status(404).json({ error:'Error al obtener los datos solicitados' });
 
         await orderDetail.addProduct(product.id ,{ through:{ orderDetailId:id }});
 
@@ -115,7 +117,7 @@ const removeProductFromOrderDetail = async (req, res) => {
         const orderDetail = await OrderDetail.findByPk(id);
         const product = await Product.findByPk(productId);
         
-        if(!orderDetail || !product) res.status(404).json({ message:'Error al obtener los datos solicitados' });
+        if(!orderDetail || !product) res.status(404).json({ error:'Error al obtener los datos solicitados' });
         
         await orderDetail.removeProduct(product.id);
         

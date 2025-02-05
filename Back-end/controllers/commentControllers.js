@@ -10,10 +10,11 @@ const commentCreate = async (req, res) => {
             productId
         });
 
-        if (newComment) res.status(201).json(newComment)
-        else res.status(404).json({ message: 'No se creo el Comentario' })
+        if (!newComment) res.status(404).json({ error: 'No se creo el Comentario' });
+
+        res.status(201).json({message:'Se creo con exito el comentario', newComment});
     } catch (error) {
-        return res.status(500).json({ error: 'Error al crear Comment', details: error.message });
+        res.status(500).json({ error: 'Error al crear Comment', details: error.message });
     }
 };
 
@@ -32,10 +33,11 @@ const commentAll = async (req, res) => {
             }]
         });
         
-        if(comments.length > 0) res.status(200).json(comments)
-        else res.status(404).json({ message:'No se encontraron comentarios creados' })
+        if(comments.length <= 0) res.status(404).json({ error:'No se encontraron comentarios creados' });
+
+        res.status(200).json({ message:'Todos los comentarios', comments})
     } catch (error) {
-        return res.status(500).json({ error: 'Error al obtener Comment', details: error.message });
+        res.status(500).json({ error: 'Error al obtener Comment', details: error.message });
     }
 };
 
@@ -55,10 +57,11 @@ const commentById = async (req, res) => {
             }]
         });
 
-        if (comment) res.status(200).json(comment)
-        else res.status(404).json({ message: 'No se encontro el Comentario' })
+        if (!comment) res.status(404).json({ error: 'No se encontro el Comentario' });
+
+        res.status(200).json({ message:`Comentario de ${comment.users.username}`, comment})
     } catch (error) {
-        return res.status(500).json({ error: 'Error al obtener Comment', details: error.message });
+        res.status(500).json({ error: 'Error al obtener Comment', details: error.message });
     }
 };
 
@@ -70,14 +73,12 @@ const commentUpdate = async (req, res) => {
             comment
         },{ where:{ id } });
         
-        if(updated) {
-            const comment = await Comment.findByPk(id);
-            return res.status(200).json(comment);
-        } else {
-            return res.status(404).json({ message:'No se actualizo el Comentario' });
-        }
+        if(!updated) res.status(404).json({ error:'No se actualizo el Comentario' });
+
+        const commentId = await Comment.findByPk(id);
+        res.status(200).json({ message:'Comentario actualizado', commentId});
     } catch (error) {
-        return res.status(500).json({ error: 'Error al actualizar Comment', details: error.message });
+        res.status(500).json({ error: 'Error al actualizar Comment', details: error.message });
     }
 };
 
@@ -86,14 +87,12 @@ const commentDelete = async (req, res) => {
     try {
         const comment = await Comment.findByPk(id);
 
-        if(comment) {
-            await comment.destroy();
-            return res.status(200).json({ message:'Se elimino el Comentario de la base de datos' });
-        } else {
-            return res.status(404).json({ message:'No se encontro el Comentario' });
-        }
+        if(!comment) res.status(404).json({ error:'No se encontro el Comentario' });
+        
+        await comment.destroy();
+        res.status(200).json({ message:'Se elimino el Comentario de la base de datos' });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al eliminar Comment', details: error.message });
+        res.status(500).json({ error: 'Error al eliminar Comment', details: error.message });
     }
 };
 

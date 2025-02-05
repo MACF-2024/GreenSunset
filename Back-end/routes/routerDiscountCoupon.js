@@ -4,7 +4,7 @@ const {
     discountCouponAll,
     discountCouponById,
     discountCouponUpdate,
-    discountCouponDelete, 
+    discountCouponValidate, 
 } = require('../controllers/discountCouponControllers');
 
 const router = express.Router();
@@ -13,6 +13,6 @@ router.post('/create', discountCouponCreate);
 router.get('/all', discountCouponAll);
 router.get('/:id', discountCouponById);
 router.put('/update/:id', discountCouponUpdate);
-router.put('/delete/:id', discountCouponDelete);
+router.put('/delete/:id', discountCouponValidate);
 
 module.exports = router;

@@ -9,10 +9,11 @@ const orderCreate = async (req, res) => {
             userId
         });
 
-        if (order) res.status(201).json(order)
-        else res.status(404).json({ message: 'No se creo la Orden' })
+        if (!order) res.status(404).json({ error: 'No se creo la Orden' });
+
+        res.status(201).json({ message: 'Se creo correctamente la orden de compra', post: order });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al crear Order', details: error.message });
+        res.status(500).json({ error: 'Error al crear Order', details: error.message });
     }
 };
 
@@ -37,10 +38,11 @@ const orderAll = async (req, res) => {
             }]
         });
         
-        if(orders.length > 0) res.status(200).json(orders)
-        else res.status(404).json({ message:'No se encontraron Ordenes creadas' })
+        if(orders.length <= 0) res.status(404).json({ error:'No se encontraron Ordenes creadas' });
+
+        res.status(200).json({ message: 'Todas las ordenes creadas', get: orders });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al obtener Order', details: error.message });
+        res.status(500).json({ error: 'Error al obtener Order', details: error.message });
     }
 };
 
@@ -66,10 +68,11 @@ const orderById = async (req, res) => {
             }]
         });
 
-        if (order) res.status(200).json(order)
-        else res.status(404).json({ message: 'No se encontro la Orden' })
+        if (!order) res.status(404).json({ error: 'No se encontro la Orden' });
+
+        res.status(200).json({ message: 'Se obtuvo la orden de compra', get: order });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al obtener Order', details: error.message });
+        res.status(500).json({ error: 'Error al obtener Order', details: error.message });
     }
 };
 
@@ -82,14 +85,13 @@ const orderUpdate = async (req, res) => {
             status
         },{ where:{ id } });
         
-        if(updated) {
-            const order = await Order.findByPk(id);
-            return res.status(200).json(order);
-        } else {
-            return res.status(404).json({ message:'No se actualizo la Orden' });
-        }
+        if(!updated) res.status(404).json({ error:'No se actualizo la Orden' });
+
+        const order = await Order.findByPk(id);
+        
+        res.status(200).json({ message: 'Se actualizo correctamente', put: order });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al actualizar Order', details: error.message });
+        res.status(500).json({ error: 'Error al actualizar Order', details: error.message });
     }
 };
 
@@ -98,15 +100,15 @@ const orderDelete = async (req, res) => {
     try {
         const order = await Order.findByPk(id);
 
-        if(order) {
-            const orderUserN = order.user.username
-            await order.destroy();
-            return res.status(200).json({ message:`Se elimino la Orden de ${orderUserN} de la base de datos` });
-        } else {
-            return res.status(404).json({ message:'No se encontro la Orden' });
-        }
+        if(!order) res.status(404).json({ error:'No se encontro la Orden' });
+        
+        const orderUserN = order.user.username
+        
+        await order.destroy();
+        
+        res.status(200).json({ message:`Se elimino la Orden de ${orderUserN} de la base de datos` });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al eliminar Order', details: error.message });
+        res.status(500).json({ error: 'Error al eliminar Order', details: error.message });
     }
 };
 
