@@ -10,10 +10,11 @@ const rankingCreate = async (req, res) => {
             productId
         });
 
-        if (newRanking) res.status(201).json(newRanking)
-        else res.status(404).json({ message: 'No se creo el Ranking' })
+        if (!newRanking) res.status(404).json({ error: 'No se creo el Ranking' });
+
+        res.status(201).json({ message: 'Se creo correctamente el ranking', post: newRanking });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al crear Ranking', details: error.message });
+        res.status(500).json({ error: 'Error al crear Ranking', details: error.message });
     }
 };
 
@@ -32,10 +33,11 @@ const rankingAll = async (req, res) => {
             }]
         });
 
-        if (rankings.length > 0) res.status(200).json(rankings)
-        else res.status(404).json({ message: 'No se encontraron Rankings creados' })
+        if (rankings.length <= 0) res.status(404).json({ error: 'No se encontraron Rankings creados' });
+        
+        res.status(200).json({ message: 'Todos los rankings creados', get: rankings });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al obtener Ranking', details: error.message });
+        res.status(500).json({ error: 'Error al obtener Ranking', details: error.message });
     }
 };
 
@@ -56,10 +58,11 @@ const rankingById = async (req, res) => {
             }]
         });
 
-        if (ranking) res.status(200).json(ranking)
-        else res.status(404).json({ message: 'No se encontro el Ranking' })
+        if (!ranking) res.status(404).json({ error: 'No se encontro el Ranking' });
+
+        res.status(200).json({ message: 'Se obtuvo el ranking', get: ranking });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al obtener Ranking', details: error.message });
+        res.status(500).json({ error: 'Error al obtener Ranking', details: error.message });
     }
 };
 
@@ -71,14 +74,13 @@ const rankingUpdate = async (req, res) => {
             ranking
         }, { where: { id } });
 
-        if (updated) {
-            const ranking = await Ranking.findByPk(id);
-            return res.status(200).json(ranking);
-        } else {
-            return res.status(404).json({ message: 'No se actualizo el Ranking' });
-        }
+        if (!updated) res.status(404).json({ error: 'No se actualizo el Ranking' });
+        
+        const ranking = await Ranking.findByPk(id);
+        
+        res.status(200).json({ message: 'Se actualizo correctamente', put: ranking });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al actualizar Ranking', details: error.message });
+        res.status(500).json({ error: 'Error al actualizar Ranking', details: error.message });
     }
 };
 
@@ -98,16 +100,16 @@ const rankingDelete = async (req, res) => {
             }]
         });
 
-        if (ranking) {
-            const username = ranking.users.username
-            const product = ranking.products.name
-            await ranking.destroy();
-            return res.status(200).json({ message: `Se elimino el Ranking de ${product} del usuario ${username} de la base de datos` });
-        } else {
-            return res.status(404).json({ message: 'No se encontro el Ranking' });
-        }
+        if (!ranking) res.status(404).json({ error: 'No se encontro el Ranking' });
+        
+        const username = ranking.users.username
+        const product = ranking.products.name
+        
+        await ranking.destroy();
+        
+        res.status(200).json({ message: `Se elimino el Ranking de ${product} del usuario ${username} de la base de datos` });
     } catch (error) {
-        return res.status(500).json({ error: 'Error al eliminar Ranking', details: error.message });
+        res.status(500).json({ error: 'Error al eliminar Ranking', details: error.message });
     }
 };
 
