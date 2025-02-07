@@ -9,7 +9,7 @@ const itemCartCreate = async (req, res) => {
             quantity
         });
 
-        if (!itemCart) res.status(404).json({ error: 'No se creo el Item del Carrito' });
+        if (!itemCart) return res.status(404).json({ error: 'No se creo el Item del Carrito' });
 
         res.status(201).json({ message: 'Se creo el item del carrito correctamente', create: itemCart });
     } catch (error) {
@@ -33,7 +33,7 @@ const itemCartAll = async (req, res) => {
             }]
         });
         
-        if(itemCarts.length <= 0) res.status(404).json({ error:'No se encontraron items del carrito creados' });
+        if(itemCarts.length <= 0) return res.status(404).json({ error:'No se encontraron items del carrito creados' });
 
         res.status(200).json({ message: 'Se obtuvo todos los items del carrito creados', get: itemCarts });
     } catch (error) {
@@ -53,7 +53,7 @@ const itemCartById = async (req, res) => {
             }
         });
 
-        if (!itemCart) res.status(404).json({ error: 'No se encontro el Item del Carrito' });
+        if (!itemCart) return res.status(404).json({ error: 'No se encontro el Item del Carrito' });
 
         res.status(200).json({ message: 'Se obtuvo el Item del carrito', get: itemCart });
     } catch (error) {
@@ -69,7 +69,7 @@ const itemCartUpdate = async (req, res) => {
             quantity
         },{ where:{ id } });
         
-        if(!updated) res.status(404).json({ error:'No se actualizo el Item del Carrito' });
+        if(!updated) return res.status(404).json({ error:'No se actualizo el Item del Carrito' });
         
         const itemCart = await ItemCart.findByPk(id, {
             include: {
@@ -90,11 +90,9 @@ const itemCartDelete = async (req, res) => {
     const { id } = req.params;
     try {
         const itemCart = await ItemCart.findByPk(id);
-
-        if(!itemCart) res.status(404).json({ error:'No se encontro el Item del Carrito' });
+        if(!itemCart) return res.status(404).json({ error:'No se encontro el Item del Carrito' });
         
         const itemCartN = itemCart.products.name
-        
         await itemCart.destroy();
         
         res.status(200).json({ message:`Se elimino el Producto ${itemCartN} de Item del Carrito de la base de datos` });
@@ -109,7 +107,7 @@ const addItemCartToProduct = async (req, res) => {
         const itemCart = await ItemCart.findByPk(id);
         const product = await Product.findByPk(productId);
 
-        if(!itemCart || !product) res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
+        if(!itemCart || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
         await itemCart.addProduct(product);
 
@@ -125,7 +123,7 @@ const removeItemCartFromProduct = async (req, res) => {
         const itemCart = await ItemCart.findByPk(id);
         const product = await Product.findByPk(productId);
 
-        if(!itemCart || !product) res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
+        if(!itemCart || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
         await itemCart.removeProduct(product);
 

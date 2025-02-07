@@ -10,7 +10,7 @@ const rankingCreate = async (req, res) => {
             productId
         });
 
-        if (!newRanking) res.status(404).json({ error: 'No se creo el Ranking' });
+        if (!newRanking) return res.status(404).json({ error: 'No se creo el Ranking' });
 
         res.status(201).json({ message: 'Se creo correctamente el ranking', post: newRanking });
     } catch (error) {
@@ -33,7 +33,7 @@ const rankingAll = async (req, res) => {
             }]
         });
 
-        if (rankings.length <= 0) res.status(404).json({ error: 'No se encontraron Rankings creados' });
+        if (rankings.length <= 0) return res.status(404).json({ error: 'No se encontraron Rankings creados' });
         
         res.status(200).json({ message: 'Todos los rankings creados', get: rankings });
     } catch (error) {
@@ -50,7 +50,6 @@ const rankingById = async (req, res) => {
                 model: User,
                 as: 'users',
                 attributes: ['id', 'username', 'email']
-
             },{
                 model: Product,
                 as: 'products',
@@ -58,7 +57,7 @@ const rankingById = async (req, res) => {
             }]
         });
 
-        if (!ranking) res.status(404).json({ error: 'No se encontro el Ranking' });
+        if (!ranking) return res.status(404).json({ error: 'No se encontro el Ranking' });
 
         res.status(200).json({ message: 'Se obtuvo el ranking', get: ranking });
     } catch (error) {
@@ -74,8 +73,7 @@ const rankingUpdate = async (req, res) => {
             ranking
         }, { where: { id } });
 
-        if (!updated) res.status(404).json({ error: 'No se actualizo el Ranking' });
-        
+        if (!updated) return res.status(404).json({ error: 'No se actualizo el Ranking' });
         const ranking = await Ranking.findByPk(id);
         
         res.status(200).json({ message: 'Se actualizo correctamente', put: ranking });
@@ -100,7 +98,7 @@ const rankingDelete = async (req, res) => {
             }]
         });
 
-        if (!ranking) res.status(404).json({ error: 'No se encontro el Ranking' });
+        if (!ranking) return res.status(404).json({ error: 'No se encontro el Ranking' });
         
         const username = ranking.users.username
         const product = ranking.products.name

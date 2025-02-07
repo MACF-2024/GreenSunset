@@ -7,7 +7,7 @@ const varietyCreate = async (req, res) => {
             name
         });
 
-        if(!variety) res.status(404).json({ error: 'No se pudo crear la Variedad' });
+        if(!variety) return res.status(404).json({ error: 'No se pudo crear la Variedad' });
 
         res.status(201).json({ message: 'Se creo correctamente', post: variety });
     } catch (error) {
@@ -19,7 +19,7 @@ const varietyAll = async (req, res) => {
     try {
         const varieties = await Variety.findAll();
 
-        if (varieties.length <= 0) res.status(404).json({ error: 'No se encontraron Variedades creadas' });
+        if (varieties.length <= 0) return res.status(404).json({ error: 'No se encontraron Variedades creadas' });
 
         res.status(200).json({ message: 'Todas las variedades creadas', get: varieties });
     } catch (error) {
@@ -32,7 +32,7 @@ const varietyById = async (req, res) => {
     try {
         const variety = await Variety.findByPk(id);
 
-        if (!variety) res.status(404).json({ error: 'No se encontro la variedad' });
+        if (!variety) return res.status(404).json({ error: 'No se encontro la variedad' });
 
         res.status(200).json({ message: 'Se obtuvo la variedad', get: variety });
     } catch (error) {
@@ -48,8 +48,7 @@ const varietyUpdate = async (req, res) => {
             name
         },{ where: { id } });
 
-        if (!updated) res.status(404).json({ error: 'No se actualizo la Variedad' });
-        
+        if (!updated) return res.status(404).json({ error: 'No se actualizo la Variedad' });
         const variety = await Variety.findByPk(id);
         
         res.status(200).json({ message: 'Se actualizo correctamente', put: variety });
@@ -62,8 +61,7 @@ const varietyDelete = async (req, res) => {
     const { id } = req.params;
     try {
         const variety = await Variety.findByPk(id);
-
-        if (!variety) res.status(404).json({ error: 'No se encontro la Variedad' });
+        if (!variety) return res.status(404).json({ error: 'No se encontro la Variedad' });
         
         const varietyName = variety.name;
         await variety.destroy();
@@ -80,7 +78,7 @@ const addVarietyToProduct = async (req, res) => {
         const variety = await Variety.findByPk(id);
         const product = await Product.findByPk(productId);
 
-        if(!variety || !product) res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
+        if(!variety || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
         await product.addVariety(variety.id);
 
@@ -96,7 +94,7 @@ const removeVarietyFromProduct = async (req, res) => {
         const variety = await Variety.findByPk(id);
         const product = await Product.findByPk(productId);
 
-        if(!variety || !product) res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
+        if(!variety || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
         await product.removeVariety(variety);
 

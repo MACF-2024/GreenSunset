@@ -10,7 +10,7 @@ const commentCreate = async (req, res) => {
             productId
         });
 
-        if (!newComment) res.status(404).json({ error: 'No se creo el Comentario' });
+        if (!newComment) return res.status(404).json({ error: 'No se creo el Comentario' });
 
         res.status(201).json({message:'Se creo con exito el comentario', newComment});
     } catch (error) {
@@ -33,7 +33,7 @@ const commentAll = async (req, res) => {
             }]
         });
         
-        if(comments.length <= 0) res.status(404).json({ error:'No se encontraron comentarios creados' });
+        if(comments.length <= 0) return res.status(404).json({ error:'No se encontraron comentarios creados' });
 
         res.status(200).json({ message:'Todos los comentarios', comments})
     } catch (error) {
@@ -57,7 +57,7 @@ const commentById = async (req, res) => {
             }]
         });
 
-        if (!comment) res.status(404).json({ error: 'No se encontro el Comentario' });
+        if (!comment) return res.status(404).json({ error: 'No se encontro el Comentario' });
 
         res.status(200).json({ message:`Comentario de ${comment.users.username}`, comment})
     } catch (error) {
@@ -73,7 +73,7 @@ const commentUpdate = async (req, res) => {
             comment
         },{ where:{ id } });
         
-        if(!updated) res.status(404).json({ error:'No se actualizo el Comentario' });
+        if(!updated) return res.status(404).json({ error:'No se actualizo el Comentario' });
 
         const commentId = await Comment.findByPk(id);
         res.status(200).json({ message:'Comentario actualizado', commentId});
@@ -87,7 +87,7 @@ const commentDelete = async (req, res) => {
     try {
         const comment = await Comment.findByPk(id);
 
-        if(!comment) res.status(404).json({ error:'No se encontro el Comentario' });
+        if(!comment) return res.status(404).json({ error:'No se encontro el Comentario' });
         
         await comment.destroy();
         res.status(200).json({ message:'Se elimino el Comentario de la base de datos' });

@@ -10,7 +10,7 @@ const membershipCreate = async (req, res) => {
             userId
         });
 
-        if (!membership) res.status(404).json({ error: 'La membresia no fue creada' });
+        if (!membership) return res.status(404).json({ error: 'La membresia no fue creada' });
 
         res.status(200).json({ message: 'La membresia fue creada correctamente', post: membership });
     } catch (error) {
@@ -28,7 +28,7 @@ const membershipAll = async (req, res) => {
             }
         });
 
-        if (!memberships) res.status(404).json({ error: 'Error al mostrar las membresias' });
+        if (!memberships) return res.status(404).json({ error: 'Error al mostrar las membresias' });
 
         res.status(200).json({ message: 'Todas las membresias creadas', get: memberships})
     } catch (error) {
@@ -47,7 +47,7 @@ const membershipById = async (req, res) => {
             }
         });
 
-        if (!membership) res.status(404).json({ error: 'Error al encontrar la membresia' });
+        if (!membership) return res.status(404).json({ error: 'Error al encontrar la membresia' });
 
         res.status(200).json({ message: 'Se obtuvo la membresia', get: membership });
     } catch (error) {
@@ -67,7 +67,7 @@ const membershipUpdate = async (req, res) => {
             description
         }, { where: { id } });
 
-        if (!updated) res.status(404).json({ error: 'No se actualizo la membrecia' });
+        if (!updated) return res.status(404).json({ error: 'No se actualizo la membrecia' });
 
         const updatedId = await Membership.findByPk(id)
         
@@ -82,12 +82,10 @@ const membershipDelete = async (req, res) => {
     const { validation } = req.body;
     try {
         const [updated] = await Membership.update({ validation }, { where: { id } });
-
-        if (!updated) res.status(404).json({ error: 'Membresia no encontrada' });
+        if (!updated) return res.status(404).json({ error: 'Membresia no encontrada' });
 
         const membership = await Membership.findByPk(id);
-        
-        if (membership.validation === false) res.status(200).json({ message: `Membresia ${membership.name} dada de baja` });
+        if (membership.validation === false) return res.status(200).json({ message: `Membresia ${membership.name} dada de baja` });
 
         res.status(200).json({ message: `Membresia ${membership.name} activada` });
     } catch (error) {

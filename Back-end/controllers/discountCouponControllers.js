@@ -10,7 +10,7 @@ const discountCouponCreate = async (req, res) => {
             membershipId
         });
 
-        if (!discountCoupon) res.status(404).json({ error: 'No se creo el Cupon de Descuento' });
+        if (!discountCoupon) return res.status(404).json({ error: 'No se creo el Cupon de Descuento' });
 
         res.status(201).json({ message: 'Se creao correctamente el cupon de descuento', discountCoupon })
     } catch (error) {
@@ -37,7 +37,7 @@ const discountCouponAll = async (req, res) => {
             }]
         });
 
-        if (discountCoupon.length <= 0) res.status(404).json({ error: 'No se encontraron cupones de descuento creados' });
+        if (discountCoupon.length <= 0) return res.status(404).json({ error: 'No se encontraron cupones de descuento creados' });
 
         res.status(200).json({ message: 'Todos los cupones de descuentos creados', discountCoupon });
     } catch (error) {
@@ -65,7 +65,7 @@ const discountCouponById = async (req, res) => {
             }]
         });
 
-        if (!discountCoupon) res.status(404).json({ error: 'No se encontro el Cupón de Descuento' });
+        if (!discountCoupon) return res.status(404).json({ error: 'No se encontro el Cupón de Descuento' });
 
         res.status(200).json({ message: 'Se obtuvo el cupon de descuento', discountCoupon })
     } catch (error) {
@@ -84,7 +84,7 @@ const discountCouponUpdate = async (req, res) => {
             membershipId
         }, { where: { id } });
 
-        if (!updated) res.status(404).json({ error: 'No se actualizo el Cupon de Descuento' });
+        if (!updated) return res.status(404).json({ error: 'No se actualizo el Cupon de Descuento' });
 
         const discountCoupon = await DiscountCoupon.findByPk(id, {
             attributes: { exclude: ['cartId', 'productId', 'membershipId'] },
@@ -117,11 +117,11 @@ const discountCouponValidate = async (req, res) => {
             validation
         }, { where: { id } });
 
-        if (!updated) res.status(404).json({ error: 'No se encontro el Cupon de Descuento' });
+        if (!updated) return res.status(404).json({ error: 'No se encontro el Cupon de Descuento' });
         
         const discountCoupon = await DiscountCoupon.findByPk(id);
 
-        if (discountCoupon.validation === false) res.status(200).json({ message: 'Se elimino el Cupon de Descuento' });
+        if (discountCoupon.validation === false) return res.status(200).json({ message: 'Se elimino el Cupon de Descuento' });
 
         res.status(200).json({ message: 'Se habilito el Cupon de Descuento' });
     } catch (error) {

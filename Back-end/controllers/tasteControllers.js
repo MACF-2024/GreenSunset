@@ -7,7 +7,7 @@ const tasteCreate = async (req, res) => {
             name
         });
 
-        if(!taste) res.status(404).json({ error: 'No se creo el sabor' });
+        if(!taste) return res.status(404).json({ error: 'No se creo el sabor' });
         
         res.status(201).json({ message: 'Se creo correctamente', post: taste });
     } catch (error) {
@@ -18,8 +18,7 @@ const tasteCreate = async (req, res) => {
 const tasteAll = async (req, res) => {
     try {
         const tastes = await Taste.findAll();
-
-        if(tastes.length <= 0) res.status(404).json({ error: 'No hay Sabores creados' });
+        if(tastes.length <= 0) return res.status(404).json({ error: 'No hay Sabores creados' });
 
         res.status(200).json({ message: 'Todos los sabores creados', get: tastes });
     } catch (error) {
@@ -31,8 +30,7 @@ const tasteById = async (req, res) => {
     const { id } = req.params;
     try {
         const taste = await Taste.findByPk(id);
-
-        if(!taste) res.status(404).json({ error: 'No se encontro el Sabor' });
+        if(!taste) return res.status(404).json({ error: 'No se encontro el Sabor' });
 
         res.status(200).json({ message: 'Se obtuvo el sabor', get: taste });
     } catch (error) {
@@ -48,8 +46,7 @@ const tasteUpdate = async (req, res) => {
             name
         },{ where:{ id } });
 
-        if (!updated) res.status(404).json({ error: 'No se pudo actualizar el Sabor' });
-        
+        if (!updated) return res.status(404).json({ error: 'No se pudo actualizar el Sabor' });
         const updatedTaste = await Taste.findByPk(id);
         
         res.status(200).json({ message: 'Se actualizo correctamente', put: updatedTaste });
@@ -62,7 +59,7 @@ const tasteDelete = async (req, res) => {
     const { id } = req.params;
     try {
         const taste = await Taste.findByPk(id);
-        if (!taste) res.status(404).json({ error: 'No se encontro el Sabor' });
+        if (!taste) return res.status(404).json({ error: 'No se encontro el Sabor' });
 
         const tasteName = taste.name;
         await taste.destroy();
@@ -79,7 +76,7 @@ const addTasteToProduct = async (req, res) => {
         const taste = await Taste.findByPk(id);
         const product = await Product.findByPk(productId);
 
-        if(!taste || !product) res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
+        if(!taste || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
         await product.addTaste(taste);
 
@@ -95,7 +92,7 @@ const removeTasteFromProduct = async (req, res) => {
         const taste = await Taste.findByPk(id);
         const product = await Product.findByPk(productId);
 
-        if(!taste || !product) res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
+        if(!taste || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
         await product.removeTaste(taste);
 
