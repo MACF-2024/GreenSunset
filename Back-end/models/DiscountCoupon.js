@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     discount: DataTypes.INTEGER,
     validation: DataTypes.BOOLEAN,
     productId: DataTypes.UUID,
+    type: DataTypes.ENUM('membership','cart','product','sin'),
     cartId: DataTypes.UUID,
     membershipId: DataTypes.UUID
   }, {
