@@ -60,27 +60,13 @@ const userAll = async (req, res) => {
     try {
         const users = await User.findAll({
             attributes: { exclude: ['residenceId'] },
-            include: [
-                // model: Product,
-                // as: 'favorites',
-                // attributes: ['id', 'name'],
-                // through: { attributes: [] }
-                {
+            include: [{
                     model: Residence,
                     as: 'residence'
                 }, {
                     model: Membership,
                     as: 'membership',
                     attributes: ['id', 'name', 'price']
-                    // },{
-                    //     model: Ranking,
-                    //     as: 'ranking'
-                    // },{
-                    //     model: Comment,
-                    //     as: 'comment'
-                    // },{
-                    //     model: Order,
-                    //     as: 'order'
                 }]
         });
 
@@ -125,6 +111,25 @@ const userGetFavorite = async (req, res) => {
                 as: 'favorites',
                 attributes: ['id', 'name'],
                 through: { attributes: [] }
+            }
+        });
+
+        if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+        res.status(200).json({ message: 'Se obtuvo los favoritos', get: user });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el usuario', details: error.message });
+    }
+};
+
+const userGetOrder = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await User.findByPk(id, {
+            attributes: [],
+            include: {
+                model: Order,
+                as: 'order'
             }
         });
 
@@ -265,5 +270,6 @@ module.exports = {
     addProductToUser,
     removeProductFromUser,
     userGetFavorite,
-    userGetCommentAndRanking
+    userGetCommentAndRanking,
+    userGetOrder
 }
