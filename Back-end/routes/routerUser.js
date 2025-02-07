@@ -11,7 +11,8 @@ const {
     removeProductFromUser,
     addResidenceToUser,
     userGetFavorite,
-    userGetCommentAndRanking
+    userGetCommentAndRanking,
+    userGetOrder
 } = require('../controllers/userControllers');
 
 const router = express.Router();
@@ -23,6 +24,7 @@ router.post('/:id/product/:productId', addProductToUser);
 router.get('/all', userAll);
 router.get('/:id', userById);
 router.get('/favorite/:id', userGetFavorite);
+router.get('/order/:id', userGetOrder);
 router.get('/comment/:id', userGetCommentAndRanking);
 router.put('/:id/residence/:residenceId', addResidenceToUser);
 router.put('/update/:id', userUpdate);
