@@ -1,16 +1,20 @@
-const { Order, User, OrderDetail, Product } = require('../models');
+const { Order, Cart, User, OrderDetail, Product } = require('../models');
 
 const orderCreate = async (req, res) => {
     const { userId } = req.params;
-    const { total } = req.body;
+    // const { total } = req.body;
     try {
+        const cart = await Cart.findOne({
+            where: { userId }
+        });
+        if(!cart) res.status(404).json({ error: 'No se encontro el carrito' })
+        
         const order = await Order.create({
-            total,
+            total: cart.total,
             userId
         });
-
         if (!order) res.status(404).json({ error: 'No se creo la Orden' });
-
+        
         res.status(201).json({ message: 'Se creo correctamente la orden de compra', post: order });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear Order', details: error.message });

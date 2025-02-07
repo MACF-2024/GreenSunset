@@ -5,14 +5,14 @@ const {
     orderDetailById,
     orderDetailUpdate,
     orderDetailDelete,
-    addProductToOrderDetail,
+    // addProductToOrderDetail,
     removeProductFromOrderDetail
 } = require('../controllers/orderDetailsControllers');
 
 const router = express.Router();
 
-router.post('/create/:orderId', orderDetailCreate);
-router.post('/:id/product/:productId', addProductToOrderDetail);
+router.post('/create/:orderId/user/:userId', orderDetailCreate);
+// router.post('/:id/product/:productId', addProductToOrderDetail);
 router.get('/all', orderDetailAll);
 router.get('/:id', orderDetailById);
 router.put('/update/:id', orderDetailUpdate);

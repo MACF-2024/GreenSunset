@@ -1,17 +1,28 @@
-const { OrderDetail, Product } = require('../models')
+const { OrderDetail, Product, ItemCart, Cart } = require('../models')
 
 const orderDetailCreate = async (req, res) => {
-    const { orderId } = req.params;
-    const { price, quantity, subtotal } = req.body;
+    const { orderId, userId } = req.params;
+    // const { price, quantity, subtotal } = req.body;
     try {
-        const orderDetail = await OrderDetail.create({
-            price, 
-            quantity, 
-            subtotal,
-            orderId
+        const cart = await Cart.findOne({
+            where: { userId },
+            include: [{
+                model: ItemCart,
+                as: 'items'
+            }]
         });
+        if (!cart || cart.items.length === 0 || !Array.isArray(cart.items)) res.status(404).json({ error: 'No se encontro el carrito o esta vacio' });
 
-        if (!orderDetail) res.status(404).json({ error: 'No se creo el Detalle de la Orden' });
+        await Promise.all(cart.items.map(async (item) => {
+            const orderDetail = await OrderDetail.create({
+                orderId,
+                quantity: item.quantity,
+                price: item.price,
+                subtotal: item.quantity * item.price
+            });
+
+            await orderDetail.addProduct(item.productId);
+        }));
 
         res.status(201).json({ message: 'Se creo correctamente el detalle de la orden', post: orderDetail });
     } catch (error) {
@@ -95,21 +106,21 @@ const orderDetailDelete = async (req, res) => {
     }
 };
 
-const addProductToOrderDetail = async (req, res) => {
-    const { id, productId } = req.params;
-    try {
-        const orderDetail = await OrderDetail.findByPk(id);
-        const product = await Product.findByPk(productId);
+// const addProductToOrderDetail = async (req, res) => {
+//     const { id, productId } = req.params;
+//     try {
+//         const orderDetail = await OrderDetail.findByPk(id);
+//         const product = await Product.findByPk(productId);
 
-        if(!orderDetail || !product) res.status(404).json({ error:'Error al obtener los datos solicitados' });
+//         if(!orderDetail || !product) res.status(404).json({ error:'Error al obtener los datos solicitados' });
 
-        await orderDetail.addProduct(product.id ,{ through:{ orderDetailId:id }});
+//         await orderDetail.addProduct(product.id ,{ through:{ orderDetailId:id }});
 
-        res.status(201).json({ message:'Agregado Producto en Detalle de la Orden' });
-    } catch (error) {
-        res.status(500).json({ error:'Error al agregar tabla intermedia', detail: error.message });
-    }
-};
+//         res.status(201).json({ message:'Agregado Producto en Detalle de la Orden' });
+//     } catch (error) {
+//         res.status(500).json({ error:'Error al agregar tabla intermedia', detail: error.message });
+//     }
+// };
 
 const removeProductFromOrderDetail = async (req, res) => {
     const { id, productId } = req.params;
@@ -133,6 +144,6 @@ module.exports = {
     orderDetailById,
     orderDetailUpdate,
     orderDetailDelete,
-    addProductToOrderDetail,
+    // addProductToOrderDetail,
     removeProductFromOrderDetail
 };
