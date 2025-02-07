@@ -17,8 +17,12 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: true
       },
+      type: {
+        type: Sequelize.ENUM('membership','cart','product','sin'),
+        defaultValue: 'sin'
+      },
       productId: {
-        type: Sequelize .UUID,
+        type: Sequelize.UUID,
         references: {
           model: 'Products',
           key: 'id'

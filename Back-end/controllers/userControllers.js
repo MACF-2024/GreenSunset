@@ -15,7 +15,7 @@ const userCreate = async (req, res) => {
             age
         });
 
-        if(!user) res.status(404).json({ error: 'No se pudo crear el usuario' });
+        if (!user) return res.status(404).json({ error: 'No se pudo crear el usuario' });
         res.status(201).json({ message: 'Se creo correctamente', post: user });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear el usuario', details: error.message });
@@ -27,9 +27,9 @@ const userLogin = async (req, res) => {
     try {
         const user = await User.findOne({ where: { email } });
         if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
-        
-        if (user.validation === false) res.status(200).json({ message: `${user.name} por decision administrativa has sido baneado` });
-        
+
+        if (user.validation === false) return res.status(200).json({ message: `${user.name} por decision administrativa has sido baneado` });
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(401).json({ error: 'Contraseña incorrecta' });
 
@@ -84,8 +84,8 @@ const userAll = async (req, res) => {
                 }]
         });
 
-        if(users.length <= 0) res.status(404).json({ error: 'No se encontraron usuario creados' });
-        
+        if (users.length <= 0) return res.status(404).json({ error: 'No se encontraron usuario creados' });
+
         res.status(200).json({ message: 'Todos los usaurios creados', get: users });
     } catch (error) {
         res.status(500).json({ error: 'Error al traer a los usuarios', details: error.message });
@@ -107,9 +107,52 @@ const userById = async (req, res) => {
             }]
         });
 
-        if (!user) res.status(404).json({ error: 'Usuario no encontrado' });
-        
+        if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
         res.status(200).json({ message: 'Se obtuvo el usuario', get: user });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el usuario', details: error.message });
+    }
+};
+
+const userGetFavorite = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await User.findByPk(id, {
+            attributes: [],
+            include: {
+                model: Product,
+                as: 'favorites',
+                attributes: ['id', 'name'],
+                through: { attributes: [] }
+            }
+        });
+
+        if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+        res.status(200).json({ message: 'Se obtuvo los favoritos', get: user });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el usuario', details: error.message });
+    }
+};
+
+const userGetCommentAndRanking = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await User.findByPk(id, {
+            attributes: [],
+            include: [{
+                model: Comment,
+                as: 'comment'
+            },{
+                model: Ranking,
+                as: 'ranking'
+            }]
+        });
+
+        if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+        res.status(200).json({ message: 'Se obtuvo los comentarios y rankings', get: user });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener el usuario', details: error.message });
     }
@@ -128,10 +171,10 @@ const userUpdate = async (req, res) => {
             image
         }, { where: { id } });
 
-        if (!updated) res.status(404).json({ error: 'Usuario no encontrado' });
-        
+        if (!updated) return res.status(404).json({ error: 'Usuario no encontrado' });
+
         const user = await User.findByPk(id);
-        
+
         res.status(200).json({ message: 'Se actualizo correctamente', put: user });
     } catch (error) {
         res.status(500).json({ error: 'Error al actualizar el usuario', details: error.message });
@@ -144,12 +187,12 @@ const userDeleted = async (req, res) => {
     try {
         const [updated] = await User.update({ validation }, { where: { id } });
 
-        if (!updated) res.status(404).json({ error: 'Usuario no encontrado' });
-        
+        if (!updated) return res.status(404).json({ error: 'Usuario no encontrado' });
+
         const user = await User.findByPk(id);
-        
-        if (user.validation) res.status(200).json({ message: `Usuario ${user.name} activo` });
-        
+
+        if (user.validation) return res.status(200).json({ message: `Usuario ${user.name} activo` });
+
         res.status(200).json({ message: `Usuario ${user.name} baneado` });
     } catch (error) {
         res.status(500).json({ error: "Error al 'eliminar' el usuario", details: error.message });
@@ -163,8 +206,8 @@ const addResidenceToUser = async (req, res) => {
             residenceId
         }, { where: { id } });
 
-        if (!updated) res.status(404).json({ error: 'Usuario no encontrado' });
-        
+        if (!updated) return res.status(404).json({ error: 'Usuario no encontrado' });
+
         const user = await User.findByPk(id, {
             include: [{
                 model: Residence,
@@ -184,7 +227,7 @@ const addProductToUser = async (req, res) => {
         const user = await User.findByPk(id);
         const product = await Product.findByPk(productId);
 
-        if (!user || !product) res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
+        if (!user || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
         await user.addFavorite(product); // El nombre del metodo depende del as de la relacion, en el caso de user el as es favorites
 
@@ -200,7 +243,7 @@ const removeProductFromUser = async (req, res) => {
         const user = await User.findByPk(id);
         const product = await Product.findByPk(productId);
 
-        if (!user || !product) res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
+        if (!user || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
         await user.removeFavorite(product);
 
@@ -220,5 +263,7 @@ module.exports = {
     userDeleted,
     addResidenceToUser,
     addProductToUser,
-    removeProductFromUser
+    removeProductFromUser,
+    userGetFavorite,
+    userGetCommentAndRanking
 }
