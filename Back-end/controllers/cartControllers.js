@@ -9,7 +9,7 @@ const cartCreate = async (req, res) => {
             userId
         });
 
-        if (!cart) res.status(404).json({ error: 'No se creo el Carrito' });
+        if (!cart) return res.status(404).json({ error: 'No se creo el Carrito' });
 
         res.status(201).json({ message: 'Se creo con exito', cart });
     } catch (error) {
@@ -38,7 +38,7 @@ const cartAll = async (req, res) => {
             }]
         });
 
-        if (carts.length <= 0) res.status(404).json({ error: 'No se encontraron carritos creados' });
+        if (carts.length <= 0) return res.status(404).json({ error: 'No se encontraron carritos creados' });
 
         res.status(200).json({ message: 'Todos lo carritos', carts });
     } catch (error) {
@@ -68,7 +68,7 @@ const cartById = async (req, res) => {
             }]
         });
 
-        if (!cart) res.status(404).json({ error: 'No se encontro el Carrito' });
+        if (!cart) return res.status(404).json({ error: 'No se encontro el Carrito' });
 
         res.status(200).json({ message: `Se obtuvo el carrito de ${cart.user.username}`, cart });
     } catch (error) {
@@ -84,7 +84,7 @@ const cartUpdate = async (req, res) => {
             total
         }, { where: { id } });
 
-        if (!updated) res.status(404).json({ error: 'No se actualizo el Carrito' });
+        if (!updated) return res.status(404).json({ error: 'No se actualizo el Carrito' });
 
         const cart = await Cart.findByPk(id);
         res.status(200).json({ message: 'Se actualizo con exito', cart });
@@ -98,7 +98,7 @@ const cartDelete = async (req, res) => {
     try {
         const cart = await Cart.findByPk(id);
 
-        if (!cart) res.status(404).json({ error: 'No se encontro el Carrito' });
+        if (!cart) return res.status(404).json({ error: 'No se encontro el Carrito' });
         
         await cart.destroy();
         res.status(200).json({ message: 'Se elimino el Carrito de la base de datos' });

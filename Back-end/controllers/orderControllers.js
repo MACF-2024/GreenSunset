@@ -2,18 +2,17 @@ const { Order, Cart, User, OrderDetail, Product } = require('../models');
 
 const orderCreate = async (req, res) => {
     const { userId } = req.params;
-    // const { total } = req.body;
     try {
         const cart = await Cart.findOne({
             where: { userId }
         });
-        if(!cart) res.status(404).json({ error: 'No se encontro el carrito' })
+        if(!cart) return res.status(404).json({ error: 'No se encontro el carrito' })
         
         const order = await Order.create({
             total: cart.total,
             userId
         });
-        if (!order) res.status(404).json({ error: 'No se creo la Orden' });
+        if (!order) return res.status(404).json({ error: 'No se creo la Orden' });
         
         res.status(201).json({ message: 'Se creo correctamente la orden de compra', post: order });
     } catch (error) {
@@ -42,7 +41,7 @@ const orderAll = async (req, res) => {
             }]
         });
         
-        if(orders.length <= 0) res.status(404).json({ error:'No se encontraron Ordenes creadas' });
+        if(orders.length <= 0) return res.status(404).json({ error:'No se encontraron Ordenes creadas' });
 
         res.status(200).json({ message: 'Todas las ordenes creadas', get: orders });
     } catch (error) {
@@ -72,7 +71,7 @@ const orderById = async (req, res) => {
             }]
         });
 
-        if (!order) res.status(404).json({ error: 'No se encontro la Orden' });
+        if (!order) return res.status(404).json({ error: 'No se encontro la Orden' });
 
         res.status(200).json({ message: 'Se obtuvo la orden de compra', get: order });
     } catch (error) {
@@ -89,8 +88,7 @@ const orderUpdate = async (req, res) => {
             status
         },{ where:{ id } });
         
-        if(!updated) res.status(404).json({ error:'No se actualizo la Orden' });
-
+        if(!updated) return res.status(404).json({ error:'No se actualizo la Orden' });
         const order = await Order.findByPk(id);
         
         res.status(200).json({ message: 'Se actualizo correctamente', put: order });
@@ -103,11 +101,9 @@ const orderDelete = async (req, res) => {
     const { id } = req.params;
     try {
         const order = await Order.findByPk(id);
-
-        if(!order) res.status(404).json({ error:'No se encontro la Orden' });
+        if(!order) return res.status(404).json({ error:'No se encontro la Orden' });
         
         const orderUserN = order.user.username
-        
         await order.destroy();
         
         res.status(200).json({ message:`Se elimino la Orden de ${orderUserN} de la base de datos` });

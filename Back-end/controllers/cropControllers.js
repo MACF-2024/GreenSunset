@@ -3,9 +3,11 @@ const { Crop } = require('../models');
 const cropCreate = async (req, res) => {
     const { name } = req.body;
     try {
-        const crop = await Crop.create({ name });
+        const crop = await Crop.create({ 
+            name 
+        });
 
-        if (!crop) res.status(404).json({ error: 'No se pudo crear el tipo de Cultivo' });
+        if (!crop) return res.status(404).json({ error: 'No se pudo crear el tipo de Cultivo' });
 
         res.status(201).json({ message: 'Se creo correctamente el cultivo', crop });
     } catch (error) {
@@ -17,7 +19,7 @@ const cropAll = async (req, res) => {
     try {
         const crops = await Crop.findAll();
 
-        if (crops.length <= 0) res.status(404).json({ error: 'No se encontraron cultivos creados' });
+        if (crops.length <= 0) return res.status(404).json({ error: 'No se encontraron cultivos creados' });
 
         res.status(200).json({ message: 'Todos los cultivos creados', crops })
     } catch (error) {
@@ -30,7 +32,7 @@ const cropById = async (req, res) => {
     try {
         const crop = await Crop.findByPk(id);
 
-        if (!crop) res.status(404).json({ error: 'No se encontro el Cultivo' });
+        if (!crop) return res.status(404).json({ error: 'No se encontro el Cultivo' });
 
         res.status(200).json({ message: 'Se encontro el cultivo', crop });
     } catch (error) {
@@ -46,7 +48,7 @@ const cropUpdate = async (req, res) => {
             name
         }, { where: { id } });
 
-        if (!updated) res.status(404).json({ error: 'No se ' });
+        if (!updated) return res.status(404).json({ error: 'No se ' });
 
         const crop = await Crop.findByPk(id);
         res.status(200).json({ message: 'Se actualizo el cultivo correctamente', crop });
@@ -60,7 +62,7 @@ const cropDelete = async (req, res) => {
     try {
         const crop = await Crop.findByPk(id);
 
-        if (!crop) res.status(404).json({ error: 'No se encontro el Cultivo' });
+        if (!crop) return res.status(404).json({ error: 'No se encontro el Cultivo' });
 
         const cropName = crop.name;
         await crop.destroy();

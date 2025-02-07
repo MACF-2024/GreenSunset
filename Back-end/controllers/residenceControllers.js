@@ -12,7 +12,7 @@ const residenceCreate = async (req, res) => {
             province
         });
 
-        if (!residence) res.status(404).json({ error: 'No se creo la Residencia' });
+        if (!residence) return res.status(404).json({ error: 'No se creo la Residencia' });
 
         res.status(201).json({ message: 'Se creo correctamente la residencia', post: residence });
     } catch (error) {
@@ -23,8 +23,7 @@ const residenceCreate = async (req, res) => {
 const residenceAll = async (req, res) => {
     try {
         const residences = await Residence.findAll();
-
-        if(residences.length <= 0) res.status(404).json({ error:'No se encontraron residencias creadas' });
+        if(residences.length <= 0) return res.status(404).json({ error:'No se encontraron residencias creadas' });
 
         res.status(200).json({ message: 'Todas las residencias creadas', get:residences });
     } catch (error) {
@@ -36,8 +35,7 @@ const residenceById = async (req, res) => {
     const { id } = req.params;
     try {
         const residence = await Residence.findByPk(id);
-
-        if (!residence) res.status(404).json({ error: 'No se encontro la Residencia' });
+        if (!residence) return res.status(404).json({ error: 'No se encontro la Residencia' });
 
         res.status(200).json({ message: 'Se obtuvo la residencia', get: residence });
     } catch (error) {
@@ -58,8 +56,7 @@ const residenceUpdate = async (req, res) => {
             province
         },{ where:{ id } });
         
-        if(!updated) res.status(404).json({ error:'No se actualizo la Residencia' });
-        
+        if(!updated) return res.status(404).json({ error:'No se actualizo la Residencia' });
         const residence = await Residence.findByPk(id);
         
         res.status(200).json({ message: 'Se actualizo correctamente', put: residence });
@@ -72,8 +69,7 @@ const residenceDelete = async (req, res) => {
     const { id } = req.params;
     try {
         const residence = await Residence.findByPk(id);
-
-        if(!residence) res.status(404).json({ error:'No se encontro la Residencia' });
+        if(!residence) return res.status(404).json({ error:'No se encontro la Residencia' });
         
         await residence.destroy();
         

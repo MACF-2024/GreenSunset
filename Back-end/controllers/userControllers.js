@@ -191,11 +191,9 @@ const userDeleted = async (req, res) => {
     const { validation } = req.body;
     try {
         const [updated] = await User.update({ validation }, { where: { id } });
-
         if (!updated) return res.status(404).json({ error: 'Usuario no encontrado' });
 
         const user = await User.findByPk(id);
-
         if (user.validation) return res.status(200).json({ message: `Usuario ${user.name} activo` });
 
         res.status(200).json({ message: `Usuario ${user.name} baneado` });

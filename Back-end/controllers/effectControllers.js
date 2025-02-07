@@ -7,7 +7,7 @@ const effectCreate = async (req, res) => {
             name
         });
 
-        if (!effect) res.status(404).json({ error: 'No se creo el Efecto' });
+        if (!effect) return res.status(404).json({ error: 'No se creo el Efecto' });
 
         res.status(201).json({ message: 'Se creo corractemente el efecto', effect });
     } catch (error) {
@@ -19,7 +19,7 @@ const effectAll = async (req, res) => {
     try {
         const effects = await Effect.findAll();
 
-        if (effects.length <= 0) res.status(404).json({ error: 'No se encontraron Efectos' });
+        if (effects.length <= 0) return res.status(404).json({ error: 'No se encontraron Efectos' });
 
         res.status(200).json({ message: 'Se obtuvo todos los efectos creados', effects });
     } catch (error) {
@@ -32,7 +32,7 @@ const effectById = async (req, res) => {
     try {
         const effect = await Effect.findByPk(id);
 
-        if (!effect) res.status(404).json({ error: 'No se encuentra el Efecto' });
+        if (!effect) return res.status(404).json({ error: 'No se encuentra el Efecto' });
 
         res.status(200).json({ message: 'Se obtuvo el efecto', effect });
     } catch (error) {
@@ -50,7 +50,7 @@ const effectUpdate = async (req, res) => {
             name
         }, { where: { id } });
 
-        if (!updated) res.status(404).json({ error: `No se actualizo el Efecto ${effectN.name}` });
+        if (!updated) return res.status(404).json({ error: `No se actualizo el Efecto ${effectN.name}` });
 
         const effect = await Effect.findByPk(id);
 
@@ -64,11 +64,9 @@ const effectDelete = async (req, res) => {
     const { id } = req.params;
     try {
         const effect = await Effect.findByPk(id);
-
-        if (!effect) res.status(404).json({ error: 'No se encontro el Efecto' });
+        if (!effect) return res.status(404).json({ error: 'No se encontro el Efecto' });
         
         const effectName = effect.name;
-        
         await effect.destroy();
         
         res.status(200).json({ message: `El efecto ${effectName} fue eliminado de la base de datos` });
@@ -83,7 +81,7 @@ const addEffectToProduct = async (req, res) => {
         const effect = await Effect.findByPk(id);
         const product = await Product.findByPk(productId);
 
-        if (!effect || !product) res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
+        if (!effect || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
         await product.addEffect(effect);
 
@@ -99,7 +97,7 @@ const removeEffectFromProduct = async (req, res) => {
         const effect = await Effect.findByPk(id);
         const product = await Product.findByPk(productId);
 
-        if (!effect || !product) res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
+        if (!effect || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
         await product.removeEffect(effect);
 

@@ -10,7 +10,7 @@ const productCreate = async (req, res) => {
             description
         });
 
-        if(!product) res.status(404).json({ error: 'No se creo el producto' });
+        if(!product) return res.status(404).json({ error: 'No se creo el producto' });
 
         res.status(200).json({ message: 'Se creo correctamente el producto', post: products });
     } catch (error) {
@@ -50,7 +50,7 @@ const productAll = async (req, res) => {
             }]
         });
         
-        if(products.length <= 0) res.status(404).json({ error: 'Productos no encontrados' });
+        if(products.length <= 0) return res.status(404).json({ error: 'Productos no encontrados' });
 
         res.status(200).json({ message: 'Todos los productos creados', get: products });
     } catch (error) {
@@ -91,7 +91,7 @@ const productById = async (req, res) => {
             }]
         });
         
-        if (!product) res.status(404).json({ error:'Producto no encontrado' });
+        if (!product) return res.status(404).json({ error:'Producto no encontrado' });
 
         res.status(200).json({ message: 'Se obtuvo el producto', get: product });
     } catch (error) {
@@ -113,8 +113,7 @@ const productUpdate = async (req, res) => {
             cropId
         }, { where: { id } });
         
-        if (!updated) res.status(404).json({ error:'Producto no actualizado' });
-        
+        if (!updated) return res.status(404).json({ error:'Producto no actualizado' });
         const product = await Product.findByPk(id);
         
         res.status(200).json({ message: 'Se actualizo correctamente', put: product });
@@ -128,12 +127,10 @@ const productDelete = async (req, res) => {
     const { validation } = req.body;
     try {
         const [updated] = await Product.update({ validation },{ where:{ id }});
+        if (!updated) return res.status(404).json({ error: 'Producto no encontrado' });
 
-        if (!updated) res.status(404).json({ error: 'Producto no encontrado' });
-
-        const product = await Product.findByPk(id);
-        
-        if (product.validation === false) res.status(200).json({ message:`Producto ${product.name} dado de baja` });
+        const product = await Product.findByPk(id);        
+        if (product.validation === false) return res.status(200).json({ message:`Producto ${product.name} dado de baja` });
 
         res.status(200).json({ message:`Producto ${product.name} activo` })
     } catch (error) {
