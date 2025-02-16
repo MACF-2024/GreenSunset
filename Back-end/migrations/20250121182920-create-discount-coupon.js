@@ -18,22 +18,13 @@ module.exports = {
         defaultValue: true
       },
       type: {
-        type: Sequelize.ENUM('membership','cart','product','sin'),
+        type: Sequelize.ENUM('membership','order','sin'),
         defaultValue: 'sin'
       },
-      productId: {
+      orderDetailId: {
         type: Sequelize.UUID,
         references: {
-          model: 'Products',
-          key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      },
-      cartId: {
-        type: Sequelize.UUID,
-        references: {
-          model: 'Carts',
+          model: 'OrderDetails',
           key: 'id'
         },
         onDelete: 'CASCADE',

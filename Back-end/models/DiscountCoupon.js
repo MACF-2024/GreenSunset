@@ -11,8 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      DiscountCoupon.belongsTo(models.Product, { foreignKey: 'productId', as:'product' });
-      DiscountCoupon.belongsTo(models.Cart, { foreignKey: 'cartId', as:'cart' });
+      DiscountCoupon.hasMany(models.OrderDetail, { foreignKey: 'discountCouponId', as: 'orderDetails' });
       DiscountCoupon.belongsTo(models.Membership, { foreignKey: 'membershipId', as:'membership' });
     }
   }
@@ -25,9 +24,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     discount: DataTypes.INTEGER,
     validation: DataTypes.BOOLEAN,
-    productId: DataTypes.UUID,
-    type: DataTypes.ENUM('membership','cart','product','sin'),
-    cartId: DataTypes.UUID,
+    orderDetailId: DataTypes.UUID,
+    type: DataTypes.ENUM('membership','order','sin'),
     membershipId: DataTypes.UUID
   }, {
     sequelize,
