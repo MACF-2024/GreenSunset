@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
       Product.hasMany(models.Ranking, { foreignKey: 'productId', as:'ranking' });
       Product.belongsToMany(models.User, { through: 'Favorite', foreignKey: 'productId', as:'favoriteProducts' });
       Product.belongsToMany(models.ItemCart, { through: 'ItemCartProduct', foreignKey: 'productId', as:'itemsCart' });
-      Product.hasOne(models.DiscountCoupon, { foreignKey: 'productId', as:'discountCoupon' });
       Product.belongsToMany(models.OrderDetail, { through: 'ProductOrderDetail', foreignKey: 'productId', as:'orderDetails' });
     }
   }

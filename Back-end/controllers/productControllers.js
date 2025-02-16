@@ -12,7 +12,7 @@ const productCreate = async (req, res) => {
 
         if(!product) return res.status(404).json({ error: 'No se creo el producto' });
 
-        res.status(200).json({ message: 'Se creo correctamente el producto', post: products });
+        res.status(200).json({ message: 'Se creo correctamente el producto', post: product });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear el producto', details: error.message });
     }

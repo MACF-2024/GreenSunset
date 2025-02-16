@@ -11,7 +11,6 @@ const membershipCreate = async (req, res) => {
         });
 
         if (!membership) return res.status(404).json({ error: 'La membresia no fue creada' });
-
         res.status(200).json({ message: 'La membresia fue creada correctamente', post: membership });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear la membresia', details: error.message });
