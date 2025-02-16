@@ -1,13 +1,15 @@
 const { Product, Variety, Taste, Effect, Crop, Comment, Ranking } = require('../models');
 
 const productCreate = async (req, res) => {
+    const { cropId } = req.params;
     const { name, image, price, description } = req.body
     try {
         const product = await Product.create({
             name, 
             image, 
             price, 
-            description
+            description,
+            cropId
         });
 
         if(!product) return res.status(404).json({ error: 'No se creo el producto' });
@@ -50,7 +52,7 @@ const productAll = async (req, res) => {
             }]
         });
         
-        if(products.length <= 0) return res.status(404).json({ error: 'Productos no encontrados' });
+        if(products.length <= 0 || !Array.isArray(products)) return res.status(404).json({ error: 'Productos no encontrados' });
 
         res.status(200).json({ message: 'Todos los productos creados', get: products });
     } catch (error) {
@@ -99,6 +101,54 @@ const productById = async (req, res) => {
     }
 };
 
+const getCommentToProduct = async (req, res) => {
+    const { id } = req.params
+    try {
+        const product = await Product.findByPk(id,{
+            attributes: [],
+            include:[{
+                model: Comment,
+                as: 'comment'
+            }]
+        });
+        
+        if (!product) return res.status(404).json({ error:'Producto no encontrado' });
+        res.status(200).json({ message: 'Se obtuvo el producto', get: product });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el producto', details: error.message });
+    }
+};
+
+const getRankngToProduct = async (req, res) => {
+    const { id } = req.params
+    try {
+        const mapping = {
+            'uno': 1,
+            'dos': 2,
+            'tres': 3,
+            'cuatro': 4,
+            'cinco': 5
+        };
+
+        const product = await Product.findByPk(id,{
+            attributes: [],
+            include:{
+                model: Ranking,
+                as: 'ranking'
+            }
+        });
+        if (!product) return res.status(404).json({ error:'Producto no encontrado' });
+
+        const numbers = product.ranking.map(e => mapping[e.ranking.trim().toLowerCase()] || 0);
+        const sum = numbers.reduce((a,b) => a + b, 0);
+        const prom = sum / numbers.length;
+
+        res.status(200).json({ message: 'Se obtuvo el producto', get: { rankingTotal: prom, product } });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el producto', details: error.message });
+    }
+};
+
 const productUpdate = async (req, res) => {
     const { id } = req.params;
     const { name, image, price, cropId, description, stock, discount } = req.body;
@@ -142,6 +192,8 @@ module.exports = {
     productCreate,
     productAll,
     productById,
+    getCommentToProduct,
+    getRankngToProduct,
     productUpdate,
     productDelete
 };
