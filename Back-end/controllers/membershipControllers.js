@@ -1,11 +1,13 @@
 const { Membership, User, DiscountCoupon } = require('../models');
 
 const membershipCreate = async (req, res) => {
-    const { name, price, description, userId } = req.body;
+    const { userId } = req.params;
+    const { name, price, img, description } = req.body;
     try {
         const membership = await Membership.create({
             name,
             price,
+            img,
             description,
             userId
         });
@@ -27,7 +29,7 @@ const membershipAll = async (req, res) => {
             }
         });
 
-        if (!memberships) return res.status(404).json({ error: 'Error al mostrar las membresias' });
+        if (memberships.length <= 0 || !Array.isArray(memberships)) return res.status(404).json({ error: 'Error al mostrar las membresias' });
 
         res.status(200).json({ message: 'Todas las membresias creadas', get: memberships})
     } catch (error) {
@@ -49,6 +51,25 @@ const membershipById = async (req, res) => {
         if (!membership) return res.status(404).json({ error: 'Error al encontrar la membresia' });
 
         res.status(200).json({ message: 'Se obtuvo la membresia', get: membership });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener la membresia', details: error.message });
+    }
+};
+
+const getUserInMembership = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const membership = await Membership.findByPk(id, {
+            include: {
+                model: User,
+                as: 'user',
+                attributes: ['id', 'username', 'email']
+            }
+        });
+
+        if (!membership) return res.status(404).json({ error: 'Error al encontrar la membresia' });
+
+        res.status(200).json({ message: 'Se obtuvo la membresia con usuarios', get: membership });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener la membresia', details: error.message });
     }
@@ -96,6 +117,7 @@ module.exports = {
     membershipCreate,
     membershipAll,
     membershipById,
+    getUserInMembership,
     membershipUpdate,
     membershipDelete
 };
