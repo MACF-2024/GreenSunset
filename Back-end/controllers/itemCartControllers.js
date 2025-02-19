@@ -1,4 +1,4 @@
-const { ItemCart, Cart, Product } = require('../models');
+const { ItemCart, Product } = require('../models');
 
 const itemCartCreate = async (req, res) => {
     const { cartId } = req.params;
@@ -19,21 +19,9 @@ const itemCartCreate = async (req, res) => {
 
 const itemCartAll = async (req, res) => {
     try {
-        const itemCarts = await ItemCart.findAll({
-            attributes: { exclude: ['cartId'] },
-            include: [{
-                model: Cart,
-                as: 'cart',
-                attributes: ['id']
-            },{
-                model: Product,
-                as: 'products',
-                attributes: ['id','name'],
-                through: { attributes: [] }
-            }]
-        });
+        const itemCarts = await ItemCart.findAll();
         
-        if(itemCarts.length <= 0) return res.status(404).json({ error:'No se encontraron items del carrito creados' });
+        if(itemCarts.length <= 0 || !Array.isArray(itemCarts)) return res.status(404).json({ error:'No se encontraron items del carrito creados' });
 
         res.status(200).json({ message: 'Se obtuvo todos los items del carrito creados', get: itemCarts });
     } catch (error) {
@@ -48,7 +36,7 @@ const itemCartById = async (req, res) => {
             include: {
                 model: Product,
                 as: 'products',
-                attributes: ['id','name'],
+                attributes: ['id','name', 'price'],
                 through: { attributes: [] }
             }
         });
@@ -71,14 +59,7 @@ const itemCartUpdate = async (req, res) => {
         
         if(!updated) return res.status(404).json({ error:'No se actualizo el Item del Carrito' });
         
-        const itemCart = await ItemCart.findByPk(id, {
-            include: {
-                model: Product,
-                as: 'products',
-                attributes: ['id','name'],
-                through: { attributes: [] }
-            }
-        });
+        const itemCart = await ItemCart.findByPk(id);
         
         res.status(200).json({ message: 'Se actualizo correctamente', get: itemCart });
     } catch (error) {
@@ -89,13 +70,20 @@ const itemCartUpdate = async (req, res) => {
 const itemCartDelete = async (req, res) => {
     const { id } = req.params;
     try {
-        const itemCart = await ItemCart.findByPk(id);
+        const itemCart = await ItemCart.findByPk(id, {
+            include: {
+                model: Product,
+                as: 'products',
+                attributes: ['name'],
+                through: { attributes: [] }
+            }
+        });
         if(!itemCart) return res.status(404).json({ error:'No se encontro el Item del Carrito' });
         
-        const itemCartN = itemCart.products.name
+        const productName = itemCart.products.map(product => product.name);
         await itemCart.destroy();
-        
-        res.status(200).json({ message:`Se elimino el Producto ${itemCartN} de Item del Carrito de la base de datos` });
+
+        res.status(200).json({ message:`Se elimino el Producto ${productName} de Item del Carrito de la base de datos`, detail: itemCart });
     } catch (error) {
         res.status(500).json({ error: 'Error al eliminar ItemCart', details: error.message });
     }
@@ -109,7 +97,7 @@ const addItemCartToProduct = async (req, res) => {
 
         if(!itemCart || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
-        await itemCart.addProduct(product);
+        await itemCart.addProduct(product.id);
 
         res.status(200).json({ message: `Agregado el producto ${product.name} al Item del Carrito correctamente` });
     } catch (error) {
@@ -125,7 +113,7 @@ const removeItemCartFromProduct = async (req, res) => {
 
         if(!itemCart || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
-        await itemCart.removeProduct(product);
+        await itemCart.removeProduct(product.id);
 
         res.status(200).json({ message: `Se elimino el producto ${product.name} del Item del Carrito correctamente` });
     } catch (error) {
