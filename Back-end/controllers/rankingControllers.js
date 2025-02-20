@@ -74,9 +74,9 @@ const rankingUpdate = async (req, res) => {
         }, { where: { id } });
 
         if (!updated) return res.status(404).json({ error: 'No se actualizo el Ranking' });
-        const ranking = await Ranking.findByPk(id);
+        const getRanking = await Ranking.findByPk(id);
         
-        res.status(200).json({ message: 'Se actualizo correctamente', put: ranking });
+        res.status(200).json({ message: 'Se actualizo correctamente', put: getRanking });
     } catch (error) {
         res.status(500).json({ error: 'Error al actualizar Ranking', details: error.message });
     }
