@@ -17,6 +17,6 @@ router.get('/all', effectAll);
 router.get('/:id', effectById);
 router.put('/update/:id', effectUpdate);
 router.delete('/delete/:id', effectDelete);
-router.delete('/:id/product/:productId', removeEffectFromProduct);
+router.delete('/:id/delete/:productId', removeEffectFromProduct);
 
 module.exports = router;

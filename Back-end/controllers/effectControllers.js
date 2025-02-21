@@ -83,7 +83,7 @@ const addEffectToProduct = async (req, res) => {
 
         if (!effect || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
-        await product.addEffect(effect);
+        await product.addEffect(effect.id);
 
         res.status(200).json({ message: `Agregado el efecto ${effect.name} al producto ${product.name} correctamente` });
     } catch (error) {
@@ -99,7 +99,7 @@ const removeEffectFromProduct = async (req, res) => {
 
         if (!effect || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
-        await product.removeEffect(effect);
+        await product.removeEffect(effect.id);
 
         res.status(200).json({ message: `Se elimino el efecto ${effect.name} del producto ${product.name} correctamente` });
     } catch (error) {
