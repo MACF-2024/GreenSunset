@@ -20,7 +20,7 @@ const router = express.Router();
 
 router.post('/create', userCreate);
 router.post('/login', userLogin);
-router.post('/:id/product/:productId', addProductToUser);
+router.post('/:id/favorite/:productId', addProductToUser);
 router.get('/all', userAll);
 router.get('/:id', userById);
 router.get('/favorite/:id', userGetFavorite);
@@ -30,7 +30,7 @@ router.put('/:id/residence/:residenceId', addResidenceToUser);
 router.put('/update/:id', userUpdate);
 router.put('/update-password/:id', userUpdatePassword);
 router.put('/delete/:id', userDeleted);
-router.delete('/:id/product/:productId', removeProductFromUser);
+router.delete('/:id/delete/:productId', removeProductFromUser);
 
 
 module.exports = router;

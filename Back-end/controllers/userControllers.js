@@ -212,6 +212,7 @@ const addResidenceToUser = async (req, res) => {
         if (!updated) return res.status(404).json({ error: 'Usuario no encontrado' });
 
         const user = await User.findByPk(id, {
+            attributes: [],
             include: [{
                 model: Residence,
                 as: 'residence'
@@ -232,9 +233,9 @@ const addProductToUser = async (req, res) => {
 
         if (!user || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
-        await user.addFavorite(product); // El nombre del metodo depende del as de la relacion, en el caso de user el as es favorites
+        await user.addFavorite(product.id); // El nombre del metodo depende del as de la relacion, en el caso de user el as es favorites
 
-        res.status(200).json({ message: `Se agrego el producto ${product.name} al usuario ${user.name} correctamente` });
+        res.status(200).json({ message: `Se agrego correctamente a la lista de favoritos de ${user.name} el producto ${product.name}` });
     } catch (error) {
         res.status(500).json({ error: 'Error al agregar tabla intermedia', details: error.message });
     }
@@ -248,9 +249,9 @@ const removeProductFromUser = async (req, res) => {
 
         if (!user || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
-        await user.removeFavorite(product);
+        await user.removeFavorite(product.id);
 
-        res.status(200).json({ message: `Se elimino el producto ${product.name} del usuario ${user.name} correctamente` });
+        res.status(200).json({ message: `Se elimino de favoritos el producto ${product.name} de la lista de ${user.name}` });
     } catch (error) {
         res.status(500).json({ error: 'Error al agregar tabla intermedia', details: error.message });
     }
