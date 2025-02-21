@@ -18,7 +18,7 @@ router.get('/all', tasteAll);
 router.get('/:id', tasteById);
 router.put('/update/:id', tasteUpdate);
 router.delete('/delete/:id', tasteDelete);
-router.delete('/:id/product/:productId', removeTasteFromProduct);
+router.delete('/:id/delete/:productId', removeTasteFromProduct);
 
 
 module.exports = router;

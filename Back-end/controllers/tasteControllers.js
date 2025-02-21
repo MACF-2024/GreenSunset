@@ -78,7 +78,7 @@ const addTasteToProduct = async (req, res) => {
 
         if(!taste || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
-        await product.addTaste(taste);
+        await product.addTaste(taste.id);
 
         res.status(200).json({ message: 'Agregado Sabor a Product correctamente' });
     } catch (error) {
@@ -94,7 +94,7 @@ const removeTasteFromProduct = async (req, res) => {
 
         if(!taste || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
-        await product.removeTaste(taste);
+        await product.removeTaste(taste.id);
 
         res.status(200).json({ message: 'Se elimino Sabor del Producto correctamente' });
     } catch (error) {

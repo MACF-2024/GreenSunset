@@ -96,7 +96,7 @@ const removeVarietyFromProduct = async (req, res) => {
 
         if(!variety || !product) return res.status(404).json({ error: 'No se encontraron lo elementos solicitados' });
 
-        await product.removeVariety(variety);
+        await product.removeVariety(variety.id);
 
         res.status(200).json({ message: 'Se elimino Variedad del Producto correctamente' });
     } catch (error) {
