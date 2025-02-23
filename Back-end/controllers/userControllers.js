@@ -59,15 +59,11 @@ const userUpdatePassword = async (req, res) => {
 const userAll = async (req, res) => {
     try {
         const users = await User.findAll({
-            attributes: { exclude: ['residenceId'] },
-            include: [{
-                    model: Residence,
-                    as: 'residence'
-                }, {
-                    model: Membership,
-                    as: 'membership',
-                    attributes: ['id', 'name', 'price']
-                }]
+            include: {
+                model: Membership,
+                as: 'membership',
+                attributes: ['id', 'name', 'price']
+            }
         });
 
         if (users.length <= 0) return res.status(404).json({ error: 'No se encontraron usuario creados' });
@@ -85,7 +81,8 @@ const userById = async (req, res) => {
             attributes: { exclude: ['residenceId'] },
             include: [{
                 model: Residence,
-                as: 'residence'
+                as: 'residence',
+                attributes: ['id', 'street', 'number', 'location', 'province']
             }, {
                 model: Membership,
                 as: 'membership',
@@ -149,7 +146,7 @@ const userGetCommentAndRanking = async (req, res) => {
             include: [{
                 model: Comment,
                 as: 'comment'
-            },{
+            }, {
                 model: Ranking,
                 as: 'ranking'
             }]
