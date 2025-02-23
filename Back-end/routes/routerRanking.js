@@ -9,7 +9,7 @@ const {
 
 const router = express.Router();
 
-router.post('/create/:userId', rankingCreate);
+router.post('/create/:userId/product/:productId', rankingCreate);
 router.get('/all', rankingAll);
 router.get('/:id', rankingById);
 router.put('/update/:id', rankingUpdate);
