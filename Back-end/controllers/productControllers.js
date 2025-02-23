@@ -43,12 +43,6 @@ const productAll = async (req, res) => {
                 model: Crop,
                 as: 'crop',
                 attributes: ['id','name']
-            },{
-                model: Ranking,
-                as: 'ranking'
-            },{
-                model: Comment,
-                as: 'comment'
             }]
         });
         
@@ -84,12 +78,6 @@ const productById = async (req, res) => {
                 model: Crop,
                 as: 'crop',
                 attributes: ['id','name']
-            },{
-                model: Ranking,
-                as: 'ranking'
-            },{
-                model: Comment,
-                as: 'comment'
             }]
         });
         
