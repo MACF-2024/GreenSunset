@@ -1,8 +1,8 @@
 const { Ranking, User, Product } = require('../models');
 
 const rankingCreate = async (req, res) => {
-    const { userId } = req.params;
-    const { ranking, productId } = req.body;
+    const { userId, productId } = req.params;
+    const { ranking } = req.body;
     try {
         const newRanking = await Ranking.create({
             ranking,
