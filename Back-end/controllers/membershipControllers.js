@@ -1,4 +1,4 @@
-const { Membership, User, DiscountCoupon } = require('../models');
+const { Membership, User, OrderDetail } = require('../models');
 
 const membershipCreate = async (req, res) => {
     const { userId } = req.params;
@@ -21,13 +21,7 @@ const membershipCreate = async (req, res) => {
 
 const membershipAll = async (req, res) => {
     try {
-        const memberships = await Membership.findAll({
-            include: {
-                model: DiscountCoupon,
-                as: 'discountCoupon',
-                attributes: ['id', 'discount']
-            }
-        });
+        const memberships = await Membership.findAll();
 
         if (memberships.length <= 0 || !Array.isArray(memberships)) return res.status(404).json({ error: 'Error al mostrar las membresias' });
 
@@ -42,8 +36,8 @@ const membershipById = async (req, res) => {
     try {
         const membership = await Membership.findByPk(id, {
             include: {
-                model: DiscountCoupon,
-                as: 'discountCoupon',
+                model: OrderDetail,
+                as: 'order',
                 attributes: ['id', 'discount']
             }
         });
@@ -62,7 +56,7 @@ const getUserInMembership = async (req, res) => {
         const membership = await Membership.findByPk(id, {
             include: {
                 model: User,
-                as: 'user',
+                as: 'users',
                 attributes: ['id', 'username', 'email']
             }
         });

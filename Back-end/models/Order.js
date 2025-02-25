@@ -24,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     total: DataTypes.DECIMAL,
     status: DataTypes.ENUM('pending','paid','shipped','completed','cancelled'),
-    userId: DataTypes.UUID
+    userId: DataTypes.UUID,
+    membershipId: DataTypes.UUID // DEJARLA SIN RELACION CON MEMBERSHIP (count)
   }, {
     sequelize,
     modelName: 'Order',

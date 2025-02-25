@@ -11,8 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      DiscountCoupon.hasMany(models.OrderDetail, { foreignKey: 'discountCouponId', as: 'orderDetails' });
-      DiscountCoupon.belongsTo(models.Membership, { foreignKey: 'membershipId', as:'membership' });
+      DiscountCoupon.belongsTo(models.OrderDetail, { foreignKey: 'orderDetailId', as: 'order' });
     }
   }
   DiscountCoupon.init({
@@ -23,10 +22,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     discount: DataTypes.INTEGER,
+    available: DataTypes.INTEGER,
     validation: DataTypes.BOOLEAN,
-    orderDetailId: DataTypes.UUID,
     type: DataTypes.ENUM('membership','order','sin'),
-    membershipId: DataTypes.UUID
+    orderDetailId: DataTypes.UUID
   }, {
     sequelize,
     modelName: 'DiscountCoupon',
