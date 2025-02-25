@@ -13,6 +13,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
+      available: {
+        type: Sequelize.INTEGER,
+        defaultValue: 15
+      },
       validation: {
         type: Sequelize.BOOLEAN,
         defaultValue: true
@@ -25,15 +29,6 @@ module.exports = {
         type: Sequelize.UUID,
         references: {
           model: 'OrderDetails',
-          key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      },
-      membershipId: {
-        type: Sequelize.UUID,
-        references: {
-          model: 'Memberships',
           key: 'id'
         },
         onDelete: 'CASCADE',

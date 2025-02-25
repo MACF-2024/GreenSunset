@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       OrderDetail.belongsToMany(models.Product, { through: 'ProductOrderDetail', foreignKey: 'orderDetailId', as:'products' });
       OrderDetail.belongsTo(models.Order, { foreignKey: 'orderId', as:'order' });
-      OrderDetail.belongsTo(models.DiscountCoupon, { foreignKey: 'discountCouponId', as: 'coupon' });
+      OrderDetail.hasMany(models.DiscountCoupon, { foreignKey: 'orderDetailId', as: 'coupon' });
+      OrderDetail.belongsTo(models.Membership, { foreignKey: 'discountCouponId', as: 'membership' });
     }
   }
   OrderDetail.init({
@@ -26,7 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     quantity: DataTypes.INTEGER,
     price: DataTypes.DECIMAL,
     subtotal: DataTypes.DECIMAL,
-    orderId: DataTypes.UUID
+    orderId: DataTypes.UUID,
+    membershipId: DataTypes.UUID
   }, {
     sequelize,
     modelName: 'OrderDetail',

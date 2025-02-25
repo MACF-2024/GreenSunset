@@ -30,6 +30,15 @@ module.exports = {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       },
+      membershipId: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'Memberships',
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
