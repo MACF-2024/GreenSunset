@@ -1,12 +1,11 @@
-const { DiscountCoupon, Membership, OrderDetail, Product } = require('../models');
+const { DiscountCoupon, OrderDetail, Product } = require('../models');
 
 const discountCouponCreate = async (req, res) => {
-    const { discount, orderDetailId, membershipId } = req.body;
+    const { discount, orderDetailId } = req.body;
     try {
         const discountCoupon = await DiscountCoupon.create({
             discount,
-            orderDetailId,
-            membershipId
+            orderDetailId
         });
 
         if (!discountCoupon) return res.status(404).json({ error: 'No se creo el Cupon de Descuento' });
@@ -19,23 +18,19 @@ const discountCouponCreate = async (req, res) => {
 const discountCouponAll = async (req, res) => {
     try {
         const discountCoupon = await DiscountCoupon.findAll({
-            attributes: { exclude: ['membershipId'] },
-            include: [{
+            attributes: { exclude: ['orderDetailId'] },
+            include: {
                 model: OrderDetail,
-                as: 'orderDetails',
-                required: false,
+                as: 'order',
+                // required: false,
                 attributes: ['id'],
                 include: {
                     model: Product,
                     as: 'products',
-                    attributes: ['name'],
+                    attributes: ['id', 'name'],
                     through: { attributes: [] }
                 }
-            }, {
-                model: Membership,
-                as: 'membership',
-                attributes: ['id', 'name']
-            }]
+            }
         });
         if (discountCoupon.length <= 0) return res.status(404).json({ error: 'No se encontraron cupones de descuento creados' });
 
@@ -49,11 +44,11 @@ const discountCouponById = async (req, res) => {
     const { id } = req.params;
     try {
         const discountCoupon = await DiscountCoupon.findByPk(id, {
-            attributes: { exclude: ['cartId', 'productId', 'membershipId'] },
-            include: [{
+            attributes: { exclude: ['orderDetailId'] },
+            include: {
                 model: OrderDetail,
-                as: 'orderDetails',
-                required: false,
+                as: 'order',
+                // required: false,
                 attributes: ['id'],
                 include: {
                     model: Product,
@@ -61,11 +56,7 @@ const discountCouponById = async (req, res) => {
                     attributes: ['name'],
                     through: { attributes: [] }
                 }
-            }, {
-                model: Membership,
-                as: 'membership',
-                attributes: ['id', 'name']
-            }]
+            }
         });
 
         if (!discountCoupon) return res.status(404).json({ error: 'No se encontro el Cupón de Descuento' });
@@ -78,33 +69,28 @@ const discountCouponById = async (req, res) => {
 
 const discountCouponUpdate = async (req, res) => {
     const { id } = req.params;
-    const { discount, orderDetailId, membershipId } = req.body;
+    const { discount, orderDetailId } = req.body;
     try {
         const [updated] = await DiscountCoupon.update({
             discount,
-            orderDetailId,
-            membershipId
+            orderDetailId
         }, { where: { id } });
 
         if (!updated) return res.status(404).json({ error: 'No se actualizo el Cupon de Descuento' });
 
         const discountCoupon = await DiscountCoupon.findByPk(id, {
-            attributes: { exclude: ['orderDetailId', 'membershipId'] },
-            include: [{
+            attributes: { exclude: ['orderDetailId'] },
+            include: {
                 model: OrderDetail,
-                as: 'orderDetails',
-                attributes: [],
+                as: 'order',
+                attributes: ['id'],
                 include: {
                     model: Product,
                     as: 'products',
-                    attributes: ['id','name'],
-                    through:{ attributes: [] }
+                    attributes: ['id', 'name'],
+                    through: { attributes: [] }
                 }
-            }, {
-                model: Membership,
-                as: 'membership',
-                attributes: ['id', 'name']
-            }]
+            }
         });
 
         res.status(200).json({ message: 'Se obtuvo el cupon de descuento', discountCoupon });
@@ -121,7 +107,7 @@ const discountCouponValidate = async (req, res) => {
             validation
         }, { where: { id } });
         if (!updated) return res.status(404).json({ error: 'No se encontro el Cupon de Descuento' });
-        
+
         const discountCoupon = await DiscountCoupon.findByPk(id);
         if (discountCoupon.validation === false) return res.status(200).json({ message: 'Se elimino el Cupon de Descuento' });
 
@@ -138,17 +124,17 @@ const discountCouponWithProducts = async (req, res) => {
             attributes: [],
             include: {
                 model: OrderDetail,
-                as: 'orderDetails',
-                attributes: [],
+                as: 'order',
+                attributes: ['id'],
                 include: {
                     model: Product,
                     as: 'products',
-                    attributes: ['id','name']
+                    attributes: ['id', 'name']
                 }
             }
         });
 
-        if(!discountCoupon) return res.status(404).json({ error: 'No se encontro el cupon de descuento' });
+        if (!discountCoupon) return res.status(404).json({ error: 'No se encontro el cupon de descuento' });
         res.status(200).json({ message: 'Productos con descuentos', discountCoupon });
     } catch (error) {
         res.status(500).json({ error: 'Error para obtener DiscountCoupon', details: error.message });

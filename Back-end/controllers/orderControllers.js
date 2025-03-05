@@ -2,6 +2,7 @@ const { Order, Cart, User, OrderDetail, Product } = require('../models');
 
 const orderCreate = async (req, res) => {
     const { userId } = req.params;
+    const { membershiId } = req.body;
     try {
         const cart = await Cart.findOne({
             where: { userId }
@@ -10,7 +11,8 @@ const orderCreate = async (req, res) => {
         
         const order = await Order.create({
             total: cart.total,
-            userId
+            userId,
+            membershiId
         });
         if (!order) return res.status(404).json({ error: 'No se creo la Orden' });
         
