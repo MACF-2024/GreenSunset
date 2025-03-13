@@ -13,6 +13,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DECIMAL
       },
+      count: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        autoIncrement: true
+      },
       status: {
         type: Sequelize.ENUM('pending','paid','shipped','completed','cancelled'),
         defaultValue: 'pending'
@@ -28,7 +33,7 @@ module.exports = {
         onUpdate: 'CASCADE'
       },
       membershipId: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

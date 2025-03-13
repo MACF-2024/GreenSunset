@@ -12,18 +12,20 @@ const orderDetailCreate = async (req, res) => {
         });
         if (!cart || cart.items.length === 0 || !Array.isArray(cart.items)) return res.status(404).json({ error: 'No se encontro el carrito o esta vacio' });
 
+        const orderDetails = [];
         await Promise.all(cart.items.map(async (item) => {
-            const orderDetail = await OrderDetail.create({
+            const create = await OrderDetail.create({
                 orderId,
                 quantity: item.quantity,
                 price: item.price,
                 subtotal: item.quantity * item.price
             });
 
-            await orderDetail.addProduct(item.productId);
+            await create.addProduct(item.productId);
+            orderDetails.push(create);
         }));
 
-        res.status(201).json({ message: 'Se creo correctamente el detalle de la orden', post: orderDetail });
+        res.status(201).json({ message: 'Se creo correctamente el detalle de la orden', post: orderDetails });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear OrderDetail', details: error.message });
     }
@@ -43,6 +45,27 @@ const orderDetailAll = async (req, res) => {
         if(orderDetails.length <= 0) return res.status(404).json({ error:'No se encontraron Detalles de Ordenes creadas' });
 
         res.status(200).json({ message: 'Todos los detalles de orden', get: orderDetails });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener OrderDetail', details: error.message });
+    }
+};
+
+const getOrderDetailsToOrder = async (req, res) => {
+    const { orderId } = req.params;
+    try {
+        const orderDetails = await OrderDetail.findAll({
+            where: { orderId },
+            include: {
+                model: Product,
+                as: 'products',
+                attributes: ['id','name','price','discount'],
+                through:{ attributes:[] }
+            }
+        });
+        
+        if(orderDetails.length <= 0 || !Array.isArray(orderDetails)) return res.status(404).json({ error:'No se encontraron Detalles de Ordenes creadas' });
+
+        res.status(200).json({ message: `Todos los detalles de la orden ${orderId}` , get: orderDetails });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener OrderDetail', details: error.message });
     }
@@ -121,6 +144,7 @@ const removeProductFromOrderDetail = async (req, res) => {
 module.exports = {
     orderDetailCreate,
     orderDetailAll,
+    getOrderDetailsToOrder,
     orderDetailById,
     orderDetailUpdate,
     orderDetailDelete,

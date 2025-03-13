@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       OrderDetail.belongsToMany(models.Product, { through: 'ProductOrderDetail', foreignKey: 'orderDetailId', as:'products' });
       OrderDetail.belongsTo(models.Order, { foreignKey: 'orderId', as:'order' });
       OrderDetail.hasMany(models.DiscountCoupon, { foreignKey: 'orderDetailId', as: 'coupon' });
-      OrderDetail.belongsTo(models.Membership, { foreignKey: 'discountCouponId', as: 'membership' });
+      OrderDetail.belongsTo(models.Membership, { foreignKey: 'membershipId', as: 'membership' });
     }
   }
   OrderDetail.init({

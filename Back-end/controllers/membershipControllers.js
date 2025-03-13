@@ -1,4 +1,4 @@
-const { Membership, User, OrderDetail } = require('../models');
+const { Membership, User } = require('../models');
 
 const membershipCreate = async (req, res) => {
     const { userId } = req.params;
@@ -34,13 +34,7 @@ const membershipAll = async (req, res) => {
 const membershipById = async (req, res) => {
     const { id } = req.params;
     try {
-        const membership = await Membership.findByPk(id, {
-            include: {
-                model: OrderDetail,
-                as: 'order',
-                attributes: ['id', 'discount']
-            }
-        });
+        const membership = await Membership.findByPk(id);
 
         if (!membership) return res.status(404).json({ error: 'Error al encontrar la membresia' });
 

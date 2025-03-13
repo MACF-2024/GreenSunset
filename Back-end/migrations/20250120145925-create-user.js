@@ -35,6 +35,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
+      membershipStatus: {
+        type: Sequelize.BOOLEAN
+      },
       image: {
         type: Sequelize.BLOB
       },

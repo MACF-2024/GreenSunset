@@ -254,6 +254,47 @@ const removeProductFromUser = async (req, res) => {
     }
 };
 
+const checkMembershipStatus = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await User.findByPk(id, {
+            include: {
+                model: Order,
+                as: 'order',
+                attributes: ['createdAt'],
+                where: { membershipId: { [Op.ne]: null } }, // Filtrar órdenes de membresía ne = diferente a ...
+                order: [['createdAt', 'DESC']], // Tomar la última orden
+                limit: 1 // Solo la más reciente
+            }
+        });
+        if (user.order.length === 0) return res.status(400).json({ message: "No hay órdenes de suscripción para este usuario." });
+
+        // 📅 Tomar la fecha de la última suscripción
+        console.log('order', user.order);
+        const subscriptionDate = new Date(user.order[0].createdAt);
+        const current = new Date();
+
+        // 📌 Calcular si ya pasó 1 mes (30 días)
+        const diff = current - subscriptionDate;
+        const daysDiff = diff / (1000 * 60 * 60 * 24); // Convertimos a días
+
+        if (daysDiff > 30) {
+            await user.update({ membershipStatus: false })
+            return res.status(200).json({ message: "La suscripción ha vencido. Se cancelará la membresía." });
+        } else {
+            const remainingDays = Math.ceil(30 - daysDiff); // Días restantes
+            return res.status(200).json({ 
+                message: `Quedan ${remainingDays} días para que la membresía expire.`,
+                status: user.membershipStatus
+            });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al agregar tabla intermedia', details: error.message });
+    }
+};
+
+
+
 module.exports = {
     userCreate,
     userLogin,
