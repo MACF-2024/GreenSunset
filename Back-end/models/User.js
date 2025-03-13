@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     reprocann: DataTypes.BOOLEAN,
     username: DataTypes.STRING,
     image: DataTypes.BLOB,
+    membershipStatus: DataTypes.BOOLEAN,
     age: DataTypes.INTEGER,
     isAdmin: DataTypes.BOOLEAN,
     validation: DataTypes.BOOLEAN,

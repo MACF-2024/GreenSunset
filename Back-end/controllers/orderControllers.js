@@ -2,7 +2,7 @@ const { Order, Cart, User, OrderDetail, Product } = require('../models');
 
 const orderCreate = async (req, res) => {
     const { userId } = req.params;
-    const { membershiId } = req.body;
+    const { membershipId } = req.body;
     try {
         const cart = await Cart.findOne({
             where: { userId }
@@ -12,7 +12,7 @@ const orderCreate = async (req, res) => {
         const order = await Order.create({
             total: cart.total,
             userId,
-            membershiId
+            membershipId
         });
         if (!order) return res.status(404).json({ error: 'No se creo la Orden' });
         
@@ -25,7 +25,7 @@ const orderCreate = async (req, res) => {
 const orderAll = async (req, res) => {
     try {
         const orders = await Order.findAll({
-            attributes: { exclude: ['userId'] },
+            attributes: { exclude: ['userId', 'membershipId'] },
             include: [{
                 model: User,
                 as: 'user',
@@ -104,11 +104,9 @@ const orderDelete = async (req, res) => {
     try {
         const order = await Order.findByPk(id);
         if(!order) return res.status(404).json({ error:'No se encontro la Orden' });
-        
-        const orderUserN = order.user.username
         await order.destroy();
         
-        res.status(200).json({ message:`Se elimino la Orden de ${orderUserN} de la base de datos` });
+        res.status(200).json({ message:'Se elimino la Orden de la base de datos' });
     } catch (error) {
         res.status(500).json({ error: 'Error al eliminar Order', details: error.message });
     }
