@@ -12,7 +12,8 @@ const {
     addResidenceToUser,
     userGetFavorite,
     userGetCommentAndRanking,
-    userGetOrder
+    userGetOrder,
+    checkMembershipStatus
 } = require('../controllers/userControllers');
 
 const router = express.Router();
@@ -26,6 +27,7 @@ router.get('/:id', userById);
 router.get('/favorite/:id', userGetFavorite);
 router.get('/order/:id', userGetOrder);
 router.get('/comment/:id', userGetCommentAndRanking);
+router.get('/statusMem/:id', checkMembershipStatus);
 router.put('/:id/residence/:residenceId', addResidenceToUser);
 router.put('/update/:id', userUpdate);
 router.put('/update-password/:id', userUpdatePassword);

@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { User, Order, Product, Residence, Membership, Comment, Ranking } = require('../models');
 const bcrypt = require('bcrypt');
 
@@ -308,5 +309,6 @@ module.exports = {
     removeProductFromUser,
     userGetFavorite,
     userGetCommentAndRanking,
-    userGetOrder
+    userGetOrder,
+    checkMembershipStatus
 }

@@ -17,7 +17,7 @@ const orderDetailCreate = async (req, res) => {
             const create = await OrderDetail.create({
                 orderId,
                 quantity: item.quantity,
-                price: item.price,
+                price: item.price + 1,
                 subtotal: item.quantity * item.price
             });
 
