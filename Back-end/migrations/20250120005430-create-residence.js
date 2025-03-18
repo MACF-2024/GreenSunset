@@ -18,7 +18,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       types: {
-        type: Sequelize.ENUM('house', 'department', 'other'),
+        type: Sequelize.ENUM('house', 'departament', 'other'),
         defaultValue: 'house',
         allowNull: false,
       },

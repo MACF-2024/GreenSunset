@@ -107,7 +107,7 @@ const getCommentToProduct = async (req, res) => {
     }
 };
 
-const getRankngToProduct = async (req, res) => {
+const getRankingToProduct = async (req, res) => {
     const { id } = req.params
     try {
         const mapping = {
@@ -181,7 +181,7 @@ module.exports = {
     productAll,
     productById,
     getCommentToProduct,
-    getRankngToProduct,
+    getRankingToProduct,
     productUpdate,
     productDelete
 };
