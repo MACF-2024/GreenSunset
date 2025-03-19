@@ -18,10 +18,13 @@ const itemCartCreate = async (req, res) => {
 };
 
 const itemCartAll = async (req, res) => {
+    const { cartId } = req.params;
     try {
-        const itemCarts = await ItemCart.findAll();
+        const itemCarts = await ItemCart.findAll({
+            where: { cartId }
+        });
         
-        if(itemCarts.length <= 0 || !Array.isArray(itemCarts)) return res.status(404).json({ error:'No se encontraron items del carrito creados' });
+        if(itemCarts.length <= 0 || !Array.isArray(itemCarts)) return res.status(404).json({ error:'No se encontraron items en este carrito' });
 
         res.status(200).json({ message: 'Se obtuvo todos los items del carrito creados', get: itemCarts });
     } catch (error) {
