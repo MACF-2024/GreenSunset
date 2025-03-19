@@ -1,4 +1,4 @@
-const { Residence } = require('../models');
+const { Residence, User } = require('../models');
 
 const residenceCreate = async (req, res) => {
     const { street, zipCode, types, number, location, province } = req.body;
@@ -32,12 +32,16 @@ const residenceAll = async (req, res) => {
 };
 
 const residenceById = async (req, res) => {
-    const { id } = req.params;
+    const { userId } = req.params;
     try {
-        const residence = await Residence.findByPk(id);
-        if (!residence) return res.status(404).json({ error: 'No se encontro la Residencia' });
+        const user = await User.findByPk(userId);
+        if (!user) return res.status(404).json({ message: 'No se encontro el usuario' });
+        if (user.residenceId === null) return res.status(404).json({ message: 'Este usuario no tiene residencia incorporada' });
+        
+        const residence = await Residence.findByPk(user.residenceId);
+        if (!residence) return res.status(404).json({ error: `No se encontro la residencia de ${user.lastName}, ${user.name}` });
 
-        res.status(200).json({ message: 'Se obtuvo la residencia', get: residence });
+        res.status(200).json({ message: 'Se obtuvo la residencia', get: user });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener la Residence', details: error.message });
     }
