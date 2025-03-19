@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.post('/create', residenceCreate);
 router.get('/all', residenceAll);
-router.get('/:id', residenceById);
+router.get('/:userId', residenceById);
 router.put('/update/:id', residenceUpdate);
 router.delete('/delete/:id', residenceDelete);
 
