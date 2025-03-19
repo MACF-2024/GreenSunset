@@ -1,4 +1,4 @@
-const { OrderDetail, Product, ItemCart, Cart } = require('../models')
+const { OrderDetail, Product, ItemCart, Cart, Order } = require('../models')
 
 const orderDetailCreate = async (req, res) => {
     const { orderId, userId } = req.params;
@@ -10,12 +10,18 @@ const orderDetailCreate = async (req, res) => {
                 as: 'items'
             }]
         });
-        if (!cart || cart.items.length === 0 || !Array.isArray(cart.items)) return res.status(404).json({ error: 'No se encontro el carrito o esta vacio' });
+        if (!cart) return res.status(404).json({ error: 'No se encontro el carrito' });
+        
+        const order = await Order.findOne({
+            where: { id: orderId }
+        });
+        if (!order) return res.status(404).json({ error: 'No se encontro la orden' });
 
         const orderDetails = [];
         await Promise.all(cart.items.map(async (item) => {
             const create = await OrderDetail.create({
                 orderId,
+                membershipId: order.membershipId,
                 quantity: item.quantity,
                 price: item.price + 1,
                 subtotal: item.quantity * item.price
@@ -34,15 +40,15 @@ const orderDetailCreate = async (req, res) => {
 const orderDetailAll = async (req, res) => {
     try {
         const orderDetails = await OrderDetail.findAll({
-            include: {
+            include: [{
                 model: Product,
                 as: 'products',
-                attributes: ['id','name','price','discount'],
-                through:{ attributes:[] }
-            }
+                attributes: ['id', 'name', 'price', 'discount'],
+                through: { attributes: [] }
+            }]
         });
-        
-        if(orderDetails.length <= 0) return res.status(404).json({ error:'No se encontraron Detalles de Ordenes creadas' });
+
+        if (orderDetails.length <= 0 || !Array.isArray(orderDetails)) return res.status(404).json({ error: 'No se encontraron Detalles de Ordenes creadas' });
 
         res.status(200).json({ message: 'Todos los detalles de orden', get: orderDetails });
     } catch (error) {
@@ -58,14 +64,14 @@ const getOrderDetailsToOrder = async (req, res) => {
             include: {
                 model: Product,
                 as: 'products',
-                attributes: ['id','name','price','discount'],
-                through:{ attributes:[] }
+                attributes: ['id', 'name', 'price', 'discount'],
+                through: { attributes: [] }
             }
         });
-        
-        if(orderDetails.length <= 0 || !Array.isArray(orderDetails)) return res.status(404).json({ error:'No se encontraron Detalles de Ordenes creadas' });
 
-        res.status(200).json({ message: `Todos los detalles de la orden ${orderId}` , get: orderDetails });
+        if (orderDetails.length <= 0 || !Array.isArray(orderDetails)) return res.status(404).json({ error: 'No se encontraron Detalles de Ordenes creadas' });
+
+        res.status(200).json({ message: `Todos los detalles de la orden ${orderId}`, get: orderDetails });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener OrderDetail', details: error.message });
     }
@@ -78,8 +84,8 @@ const orderDetailById = async (req, res) => {
             include: {
                 model: Product,
                 as: 'products',
-                attributes: ['id','name','price','discount'],
-                through:{ attributes:[] }
+                attributes: ['id', 'name', 'price', 'discount'],
+                through: { attributes: [] }
             }
         });
 
@@ -96,14 +102,14 @@ const orderDetailUpdate = async (req, res) => {
     const { price, subtotal, quantity } = req.body;
     try {
         const [updated] = await OrderDetail.update({
-            price, 
-            subtotal, 
+            price,
+            subtotal,
             quantity
-        },{ where:{ id } });
-        
-        if(!updated) return res.status(404).json({ error:'No se actualizo el Detalle de la Orden' });
+        }, { where: { id } });
+
+        if (!updated) return res.status(404).json({ error: 'No se actualizo el Detalle de la Orden' });
         const orderDetail = await OrderDetail.findByPk(id);
-        
+
         res.status(200).json({ message: 'Se actualizo correctamente', put: orderDetail });
     } catch (error) {
         res.status(500).json({ error: 'Error al actualizar OrderDetail', details: error.message });
@@ -114,12 +120,12 @@ const orderDetailDelete = async (req, res) => {
     const { id } = req.params;
     try {
         const orderDetail = await OrderDetail.findByPk(id);
-        if(!orderDetail) return res.status(404).json({ error:'No se encontro el Detalle de la Orden' });
-        
+        if (!orderDetail) return res.status(404).json({ error: 'No se encontro el Detalle de la Orden' });
+
         const username = orderDetail.order.user.username
         await orderDetail.destroy();
-        
-        res.status(200).json({ message:`Se elimino el Detalle de la Orden de ${username} de la base de datos` });
+
+        res.status(200).json({ message: `Se elimino el Detalle de la Orden de ${username} de la base de datos` });
     } catch (error) {
         res.status(500).json({ error: 'Error al eliminar OrderDetail', details: error.message });
     }
@@ -130,14 +136,14 @@ const removeProductFromOrderDetail = async (req, res) => {
     try {
         const orderDetail = await OrderDetail.findByPk(id);
         const product = await Product.findByPk(productId);
-        
-        if(!orderDetail || !product) return res.status(404).json({ error:'Error al obtener los datos solicitados' });
-        
+
+        if (!orderDetail || !product) return res.status(404).json({ error: 'Error al obtener los datos solicitados' });
+
         await orderDetail.removeProduct(product.id);
-        
-        res.status(201).json({ message:'Eliminado Producto en Detalle de la Orden' });
+
+        res.status(201).json({ message: 'Eliminado Producto en Detalle de la Orden' });
     } catch (error) {
-        res.status(500).json({ error:'Error al agregar tabla intermedia', detail: error.message });
+        res.status(500).json({ error: 'Error al agregar tabla intermedia', detail: error.message });
     }
 };
 

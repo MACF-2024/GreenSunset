@@ -1,18 +1,23 @@
-const { Order, Cart, User, OrderDetail, Product } = require('../models');
+const { Order, Cart, User, OrderDetail, Product, Membership } = require('../models');
 
 const orderCreate = async (req, res) => {
     const { userId } = req.params;
-    const { membershipId } = req.body;
+    const { membershipName } = req.body;
     try {
         const cart = await Cart.findOne({
             where: { userId }
         });
-        if(!cart) return res.status(404).json({ error: 'No se encontro el carrito' })
+        if (!cart) return res.status(404).json({ error: 'No se encontro el carrito' });
+        
+        const membership = await Membership.findOne({
+            where: { name: membershipName }
+        });
+        if (!membership) return res.status(404).json({ error: 'No se encontro la membresia' });
         
         const order = await Order.create({
             total: cart.total,
             userId,
-            membershipId
+            membershipId: membership.id
         });
         if (!order) return res.status(404).json({ error: 'No se creo la Orden' });
         
@@ -42,8 +47,7 @@ const orderAll = async (req, res) => {
                 }
             }]
         });
-        
-        if(orders.length <= 0) return res.status(404).json({ error:'No se encontraron Ordenes creadas' });
+        if(orders.length <= 0 || !Array.isArray(orders)) return res.status(404).json({ error:'No se encontraron Ordenes creadas' });
 
         res.status(200).json({ message: 'Todas las ordenes creadas', get: orders });
     } catch (error) {
