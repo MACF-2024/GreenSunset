@@ -1,14 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
+import userReducer from '../features/sliceUsers';
+import orderReducer from '../features/sliceOrders';
+import productReducer from '../features/sliceProducts';
+import membershipReducer from '../features/sliceMemberships';
+import cartReducer from '../features/sliceCarts';
+import favoriteReducer from '../features/sliceFavorites';
 
 
 export const store = configureStore({
     reducer: {
-        user: 2,
-        product: 2,
-        membriship: 2,
-        cart: 2,
-        order: 2,
-        comment: 2,
-        ranking: 2
+        user: userReducer,
+        product: productReducer,
+        membriship: membershipReducer,
+        cart: cartReducer,
+        order: orderReducer,
+        favorite: favoriteReducer
     }
 });
