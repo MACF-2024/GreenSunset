@@ -1,14 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    users: []
+    memberships: []
 };
 
-const userSlice = createSlice({
-    name: "user",
+const membershipSlice = createSlice({
+    name: "membership",
     initialState,
     reducers: {}
 });
 
-export default userSlice.reducer
+export default membershipSlice.reducer
 // export const {  } = userSlice.actions 
